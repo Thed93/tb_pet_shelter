@@ -8,10 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.handle.Handlers;
+import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -33,6 +36,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Autowired
     private TelegramBot telegramBot;
 
+    @Autowired
+    private PetReportService petReportService;
+
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
@@ -44,10 +50,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing update: {}", update);
             Message message = update.message();
             Long chatId = message.chat().id();
-            LocalDateTime dateTime;
+            LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
                 String userName = message.chat().firstName();
                 String text = message.text();
+                String owner = message.chat().firstName() + " " + message.chat().lastName();
+
 
                 //приветствие
                 if (text.equals("/start")) {
@@ -133,6 +141,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     handlers.volunteer(chatId);
                 }
                 //Этап 3. Ведение питомца
+                else if (text.equals("/report") && currentState == BotState.CHOOSE_SHELTER) {
+                    currentState = BotState.REPORT;
+                    telegramBotService.sendMessage(chatId, "Для отчета о вашем животном отправьте пожалуйста фото и текст.");
+                }
+                else if (currentState == BotState.REPORT) {
+                    petReportService.savePetReport(owner, dateTime, message.photo(), message.text(), chatId  );
+                }
                 else {
                     telegramBotService.sendMessage(
                             chatId,

@@ -23,7 +23,7 @@ public class Handlers {
         text = "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
                 "'/information' - Узнать информацию о приюте \n" +
                 "'/howToTakePet' - Как взять животное из приюта\n" +
-                "'/3' - Прислать отчет о питомце\n" +
+                "'/report' - Прислать отчет о питомце\n" +
                 "'/volunteer' - Позвать волонтера";
         telegramBotService.sendMessage(chatId, text);
     }
