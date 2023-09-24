@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pro.sky.telegrambot.entity.User;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserService;
+
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,8 +27,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private BotState currentState;
 
-    private boolean hasChosenShelter;
-    private String chosenShelter;
+    private ShelterType shelterType;
+
+    private User user;
 
     @Autowired
     private TelegramBotService telegramBotService;
@@ -38,6 +42,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private PetReportService petReportService;
+
+    @Autowired
+    private UserService userService;
 
     @PostConstruct
     public void init() {
@@ -53,15 +60,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
                 String userName = message.chat().firstName();
+                String userSurname = message.chat().lastName();
                 String text = message.text();
-                String owner = message.chat().firstName() + " " + message.chat().lastName();
+
 
 
                 //приветствие
                 if (text.equals("/start")) {
                     currentState = BotState.START;
-                    hasChosenShelter = false;
-                    chosenShelter = null;
+                    user.setHasChoosenShelter(false);
+                    user.setCurrentChosenShelter(null);
+                    user.setName(userName);
+                    user.setSurname(userSurname);
+                    userService.saveUser(user);
                     telegramBotService.sendMessage(chatId,
                             userName + " , приветствую вас!\n" +
                                     "Я - учебный бот, симулирующий работу приюта для животных. \n" +
@@ -69,15 +80,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                     "'/dog' - для собак, '/cat' - для кошек");
 
                     //выбор приюта
-                } else if (text.equals("/dog") && currentState == BotState.START && !hasChosenShelter) {
+                } else if (text.equals("/dog") && currentState == BotState.START && !user.isHasChoosenShelter()) {
                     currentState = BotState.CHOOSE_SHELTER;
-                    chosenShelter = "Приют для собак";
-                    hasChosenShelter = true;
+                    user.setCurrentChosenShelter(ShelterType.DOG_SHELTER);
+                    user.setHasChoosenShelter(true);
                     handlers.handleShelterConsultation(chatId, text);
-                } else if (text.equals("/cat") && currentState == BotState.START && !hasChosenShelter) {
+                } else if (text.equals("/cat") && currentState == BotState.START && !user.isHasChoosenShelter()) {
                     currentState = BotState.CHOOSE_SHELTER;
-                    chosenShelter = "Приют для кошек";
-                    hasChosenShelter = true;
+                    user.setCurrentChosenShelter(ShelterType.CAT_SHELTER);;
+                    user.setHasChoosenShelter(true);
                     handlers.handleShelterConsultation(chatId, text);
                 }
                 //получение информации о приюте
@@ -86,19 +97,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
                 //уточнение более конкрейтной информации
                 else if (text.equals("/about") && currentState == BotState.CHOOSE_SHELTER){
-                    handlers.aboutShelter(chatId, chosenShelter);
+                    handlers.aboutShelter(chatId, user.getCurrentChosenShelter());
                 }
                 //уточнение рабочих часов
                 else if (text.equals("/workingHours") && currentState == BotState.CHOOSE_SHELTER){
-                    handlers.workingHours(chatId, chosenShelter);
+                    handlers.workingHours(chatId, user.getCurrentChosenShelter());
                 }
                 //узнать номер охраны
                 else if (text.equals("/securityNumber") && currentState == BotState.CHOOSE_SHELTER){
-                    handlers.securityNumber(chatId, chosenShelter);
+                    handlers.securityNumber(chatId, user.getCurrentChosenShelter());
                 }
                 //узнать рекомандации перед посещением приюта
                 else if (text.equals("/safetyPrecautions") && currentState == BotState.CHOOSE_SHELTER){
-                    handlers.safetyPrecautions(chatId, chosenShelter);
+                    handlers.safetyPrecautions(chatId, user.getCurrentChosenShelter());
                 }
                 //записать свои данные
                 else if (text.equals("/writeData") && currentState == BotState.CHOOSE_SHELTER){
@@ -107,11 +118,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 //Этап 2. Консультация с потенциальным хозяином животного из приюта
                 else if (text.equals("/howToTakePet") && currentState == BotState.CHOOSE_SHELTER){
                     currentState = BotState.MENU;
-                    handlers.howToTakePet(chatId, chosenShelter);
+                    handlers.howToTakePet(chatId, user.getCurrentChosenShelter());
                 }
                 //
                 else if (text.equals("/welcomeRules") && currentState == BotState.MENU) {
-                    handlers.welcomeRules(chatId, chosenShelter);
+                    handlers.welcomeRules(chatId, user.getCurrentChosenShelter());
                 }
                 else if (text.equals("/docs") && currentState == BotState.MENU) {
                     handlers.docs(chatId);

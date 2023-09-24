@@ -20,7 +20,7 @@ public class PetReport {
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
-    @Column(length = 20, nullable = true)
+    @Column(length = 20, nullable = true, columnDefinition = "oid")
     private PhotoSize[] photo;
 
     @Column(length = 2000, nullable = true)
@@ -28,6 +28,10 @@ public class PetReport {
 
     @Column(name = "report_number", nullable = false)
     private int reportNumber;
+
+    @ManyToOne
+    private User user;
+
 
     public PetReport(String owner, LocalDateTime dateTime, PhotoSize[] photo, String text) {
         this.owner = owner;
