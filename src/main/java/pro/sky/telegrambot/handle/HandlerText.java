@@ -4,8 +4,14 @@ import pro.sky.telegrambot.listener.ShelterType;
 
 public class HandlerText {
 
+
     public String handleShelterConsultationText(String animalType){
-        if (animalType.equals(DOG_SHELTER))
+        String shelter_type = null;
+        if (animalType.equals(ShelterType.CAT_SHELTER)){
+            shelter_type="кошек";
+        } else {
+            shelter_type="собак";
+        }
         return "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
                 "'/information' - Узнать информацию о приюте \n" +
                 "'/howToTakePet' - Как взять животное из приюта\n" +
@@ -23,7 +29,7 @@ public class HandlerText {
     }
 
     public String aboutShelterText(ShelterType shelterType){
-        if (shelterType.equals("Приют для кошек")) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
             return  "Приют для кошек работает с 1999 года и имеет уже 3 кошки";
         } else {
             return  "Приют для собак не работал никогда";
@@ -31,7 +37,7 @@ public class HandlerText {
     }
 
     public String workingHoursText(ShelterType shelterType){
-        if (shelterType.equals("Приют для кошек")) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
             return  "Рабочие часы приюта: 8:00 - 18:00 + \n" +
                     "Приют находится по адресу: г. Калининград, ул. Куклачева, д.9";
         } else {
@@ -41,7 +47,7 @@ public class HandlerText {
     }
 
     public String securityNumberText (ShelterType shelterType){
-        if (shelterType.equals("Приют для кошек")) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
             return  "Номер охраны: 8-999-999-99-99";
         } else {
             return "Номер охраны: 8-888-888-88-88";
@@ -49,7 +55,7 @@ public class HandlerText {
     }
 
     public String safetyPrecautionsText (ShelterType shelterType){
-        if (shelterType.equals("Приют для кошек")) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
             return "Не быть мышью, принести с собой коробку";
         } else {
             return "Не быть куском мяса, принести палку";
@@ -71,7 +77,7 @@ public class HandlerText {
                         "'/specialPetHouse' - выдать список рекомендаций по обустройству дома для животного с ограниченными возможностями (зрение, передвижение).+\n");
         String text = "'/adviceDogHandler' - выдать советы кинолога по первичному общению с собакой.+\n" +
                 "'/dogHandler' - выдать рекомендации по проверенным кинологам для дальнейшего обращения к ним.";
-        if (shelterType.equals("Приют для собак")) {
+        if (shelterType.equals(ShelterType.DOG_SHELTER)) {
             stringBuilder.append(text);
         }
         String text1 = "'/refusePet' - выдать список причин, почему могут отказать и не дать забрать собаку из приюта. +\n" +
@@ -80,7 +86,7 @@ public class HandlerText {
         return stringBuilder.toString();
     }
     public String welcomeRulesText(ShelterType shelterType){
-        if (shelterType.equals("Приют для кошек")) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
             return  "Перед тем, как забрать к себе кошку," +
                     "приедите в приют и понаблюдайте," +
                     "какой у каждого питомца характер, повадки и " +

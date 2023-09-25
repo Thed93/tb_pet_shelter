@@ -1,12 +1,13 @@
 package pro.sky.telegrambot.entity;
 
+import pro.sky.telegrambot.listener.BotState;
 import pro.sky.telegrambot.listener.ShelterType;
 
 import javax.persistence.*;
 
 
 @Entity
-@Table(name = "pet_report")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +19,11 @@ public class User {
     @Column(length = 20, nullable = true)
     private String surname;
 
-    @Column(length = 20, nullable = true)
     private ShelterType currentChosenShelter;
 
-    @Column
-    private boolean hasChoosenShelter = false;
+    private boolean hasChosenShelter = false;
+
+    private BotState botState;
 
 
     public User(String name, String surname) {
@@ -41,12 +42,12 @@ public class User {
         this.currentChosenShelter = currentChosenShelter;
     }
 
-    public boolean isHasChoosenShelter() {
-        return hasChoosenShelter;
+    public boolean isHasChosenShelter() {
+        return !hasChosenShelter;
     }
 
-    public void setHasChoosenShelter(boolean hasChoosenShelter) {
-        this.hasChoosenShelter = hasChoosenShelter;
+    public void setHasChosenShelter(boolean hasChosenShelter) {
+        this.hasChosenShelter = hasChosenShelter;
     }
 
     public String getName() {
@@ -65,5 +66,20 @@ public class User {
         this.surname = surname;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public BotState getBotState() {
+        return botState;
+    }
+
+    public void setBotState(BotState botState) {
+        this.botState = botState;
+    }
 }
 

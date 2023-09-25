@@ -7,5 +7,5 @@ import java.util.Collection;
 import java.util.List;
 
 public interface PetReportRepository extends JpaRepository<PetReport, Long> {
-    List<PetReport> findReportsByOwner(String owner);
+    List<PetReport> findReportsByNameAndSurname(String name, String surname);
 }

@@ -3,7 +3,6 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.model.PhotoSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.repository.PetReportRepository;
@@ -17,21 +16,22 @@ import java.util.Optional;
 @Service
 public class PetReportService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PetReportService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PetReportService.class);
 
     private final PetReportRepository petReportRepository;
 
-    @Autowired
-    private TelegramBotService telegramBotService;
 
-    public PetReportService(PetReportRepository petReportRepository) {
+    private final TelegramBotService telegramBotService;
+
+    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService) {
         this.petReportRepository = petReportRepository;
+        this.telegramBotService = telegramBotService;
     }
 
     @Transactional
-    public void savePetReport(String owner, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
-        PetReport newReport = new PetReport(owner, dateTime.truncatedTo(ChronoUnit.DAYS), photo, text);
-        List<PetReport> ownerReports = petReportRepository.findReportsByOwner(owner);
+    public void savePetReport(String name,String surname, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
+        PetReport newReport = new PetReport(name, surname, dateTime.truncatedTo(ChronoUnit.DAYS), photo, text);
+        List<PetReport> ownerReports = petReportRepository.findReportsByNameAndSurname(name, surname);
         PetReport lastReport = null;
         for (int i = 0; i < ownerReports.size(); i++) {
             if (lastReport.getReportNumber() < ownerReports.get(i).getReportNumber()) {

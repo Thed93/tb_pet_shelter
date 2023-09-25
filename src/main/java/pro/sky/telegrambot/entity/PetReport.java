@@ -15,7 +15,10 @@ public class PetReport {
     private Long id;
 
     @Column(length = 20, nullable = false)
-    private String owner;
+    private String ownerName;
+
+    @Column(length = 20, nullable = false)
+    private String ownerSurname;
 
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
@@ -33,8 +36,9 @@ public class PetReport {
     private User user;
 
 
-    public PetReport(String owner, LocalDateTime dateTime, PhotoSize[] photo, String text) {
-        this.owner = owner;
+    public PetReport(String ownerName, String ownerSurname, LocalDateTime dateTime, PhotoSize[] photo, String text) {
+        this.ownerName = ownerName;
+        this.ownerSurname = ownerSurname;
         this.dateTime = dateTime;
         this.photo = photo;
         this.text = text;
@@ -48,12 +52,32 @@ public class PetReport {
     }
 
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerName() {
+        return ownerName;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerSurname() {
+        return ownerSurname;
+    }
+
+    public void setOwnerSurname(String ownerSurname) {
+        this.ownerSurname = ownerSurname;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getDateTime() {
