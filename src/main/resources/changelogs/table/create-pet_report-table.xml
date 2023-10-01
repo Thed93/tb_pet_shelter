@@ -9,7 +9,6 @@
         <preConditions>
             <not>
                 <tableExists tableName="pet_report"/>
-                <tableExists tableName="user"/>
             </not>
         </preConditions>
 
@@ -28,18 +27,6 @@
             </column>
             <column name="text" type="VARCHAR(2000)">
                 <constraints nullable="true"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="user">
-            <column name="userId" autoIncrement="true" type="BIGINT">
-                <constraints primaryKey="true" />
-            </column>
-            <column name="name" type="VARCHAR(20)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="surname" type="VARCHAR(20)">
-                <constraints nullable="false"/>
             </column>
         </createTable>
 

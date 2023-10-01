@@ -1,51 +1,75 @@
 package pro.sky.telegrambot.service;
 
-import com.pengrad.telegrambot.model.PhotoSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
+import pro.sky.telegrambot.entity.User;
 import pro.sky.telegrambot.repository.PetReportRepository;
-
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * service for processing commands
+ */
 @Service
 public class PetReportService {
 
+    /**
+     * class for adding message to programmer
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(PetReportService.class);
 
+    /**
+     * repository for data access
+     */
     private final PetReportRepository petReportRepository;
 
 
+    /**
+     *
+     * copy of Telegram - bot for sending message
+     */
     private final TelegramBotService telegramBotService;
 
-    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService) {
+
+    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService, User user) {
         this.petReportRepository = petReportRepository;
         this.telegramBotService = telegramBotService;
     }
 
+    /**
+     *
+     * save the report of the person who adopted the pet from the shelter
+     * <br>
+     * use repository methods:
+     * <br>
+     * {@link pro.sky.telegrambot.repository.PetReportRepository#findReportsByNameAndSurname(String, String)}
+     * <br>
+     * {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     *
+     * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
+     */
     @Transactional
-    public void savePetReport(String name,String surname, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
-        PetReport newReport = new PetReport(name, surname, dateTime.truncatedTo(ChronoUnit.DAYS), photo, text);
-        List<PetReport> ownerReports = petReportRepository.findReportsByNameAndSurname(name, surname);
+    public void savePetReport(PetReport petReport) {
+        List<PetReport> ownerReports = petReportRepository.findReportsByNameAndSurname(petReport.getUser().getName(), petReport.getUser().getSurname());
         PetReport lastReport = null;
         for (int i = 0; i < ownerReports.size(); i++) {
             if (lastReport.getReportNumber() < ownerReports.get(i).getReportNumber()) {
                 lastReport = ownerReports.get(i);
             }
         }
-        if (!lastReport.getDateTime().equals(newReport.getDateTime())) {
-            if (newReport.getPhoto().equals(Optional.empty())) {
-                telegramBotService.sendMessage(chatId, "Добавьте фото к вашему отчету и отправьте их вместе!");
-            } else if (newReport.getText().isEmpty()) {
-                telegramBotService.sendMessage(chatId, "Добавьте текст к вашему отчету и отправьте их вместе!");
+        if (!lastReport.getDateTime().equals(petReport.getDateTime())) {
+            if (petReport.getPhoto().equals(Optional.empty())) {
+                telegramBotService.sendMessage(petReport.getChatId(), "Добавьте фото к вашему отчету и отправьте их вместе!");
+            } else if (petReport.getText().isEmpty()) {
+                telegramBotService.sendMessage(petReport.getChatId(), "Добавьте текст к вашему отчету и отправьте их вместе!");
             } else {
-                petReportRepository.save(newReport);
-                telegramBotService.sendMessage(chatId, "Спасибо за ваш отчет!");
+                petReportRepository.save(petReport);
+                telegramBotService.sendMessage(petReport.getChatId(), "Спасибо за ваш отчет!");
             }
         }
 //        if (lastReport.getDateTime().equals(newReport.getDateTime()) && !lastReport.getText().isEmpty() && !lastReport.getPhoto().isEmpty()) {
@@ -78,6 +102,30 @@ public class PetReportService {
 //            }
 
 
+        }
+
+    /**
+     *
+     * get all saving reports from all users
+     * <br>
+     * use repository method {@link JpaRepository#findAll()}
+     *
+     * @return all saving reports
+     */
+    public Collection<PetReport> getAllReports(){
+        return petReportRepository.findAll();
+        }
+
+    /**
+     *
+     * get all saving reports from person, which we found by name and surname
+     * <br>
+     * use repository method {@link pro.sky.telegrambot.repository.PetReportRepository#findReportsByNameAndSurname(String, String)}
+     *
+     * @return all saving reports from chosen person
+     */
+        public Collection<PetReport>getReportsByNameAndSurname(String name, String surname){
+        return petReportRepository.findReportsByNameAndSurname(name, surname);
         }
 
 

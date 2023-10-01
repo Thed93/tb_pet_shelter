@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-appeal_to_volunteer-table.4" author="Evgeniy Zinchenko">
+        <preConditions>
+            <not>
+                <tableExists tableName="appeal_to_volunteer-table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="appeal_to_volunteer-table">
+            <column name="user" type=>
+                <constraints />
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+</databaseChangeLog>

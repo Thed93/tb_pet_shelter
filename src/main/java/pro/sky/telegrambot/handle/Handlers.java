@@ -1,22 +1,44 @@
 package pro.sky.telegrambot.handle;
 
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.listener.ShelterType;
+import pro.sky.telegrambot.entity.AppealToVolonteer;
+import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.service.AppealToVolunteerService;
 import pro.sky.telegrambot.service.TelegramBotService;
 
+/**
+ * service of methods, which will be chosen depending on user's message
+ */
 @Service
 public class Handlers {
 
+    /**
+     * copy of Telegram - bot for sending message
+     */
     private final TelegramBotService telegramBotService;
 
+    /**
+     * texts of methods
+     */
     private final HandlerText handlerText;
 
+    /**
+     * service for saving appeal to volunteer
+     */
+    private final AppealToVolunteerService appealToVolunteerService;
 
-    public Handlers(TelegramBotService telegramBotService, HandlerText handlerText) {
+
+    public Handlers(TelegramBotService telegramBotService, HandlerText handlerText, AppealToVolunteerService appealToVolunteerService) {
         this.telegramBotService = telegramBotService;
         this.handlerText = handlerText;
+        this.appealToVolunteerService = appealToVolunteerService;
     }
 
+
+    public void startCommand(Long chatId, String name){
+        telegramBotService.sendMessage(chatId, handlerText.startingText(name));
+    }
     public void handleShelterConsultation(Long chatId, String type) {
         String animalType = null;
         if (type.equals("/dog")) {
@@ -26,7 +48,7 @@ public class Handlers {
         }
         telegramBotService.sendMessage(chatId, handlerText.handleShelterConsultationText(animalType));
     }
-    public void handleAdoptionConsultation(Long chatId, String type) {
+    public void handleAdoptionConsultation(Long chatId, ShelterType currentChosenShelter) {
         telegramBotService.sendMessage(chatId, handlerText.handleAdoptionConsultationText());
     }
 
@@ -90,7 +112,14 @@ public class Handlers {
 
     }
 
-    public void volunteer(Long chatId) {
+    public void volunteer(User user, long chatId) {
         telegramBotService.sendMessage(chatId, handlerText.volunteerText());
+        AppealToVolonteer appealToVolonteer = new AppealToVolonteer(user);
+        appealToVolunteerService.saveAppeal(appealToVolonteer);
+    }
+
+    public void reportMenu(User user, String text, long chatId){
+        telegramBotService.sendMessage(chatId, handlerText.reportText());
     }
 }
+

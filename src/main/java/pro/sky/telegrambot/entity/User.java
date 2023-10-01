@@ -1,41 +1,74 @@
 package pro.sky.telegrambot.entity;
 
-import pro.sky.telegrambot.listener.BotState;
-import pro.sky.telegrambot.listener.ShelterType;
+import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.ShelterType;
 
 import javax.persistence.*;
 
 
+/**
+ * class of users
+ */
 @Entity
 @Table(name = "user")
 public class User {
+
+    /**
+     * unique identifier of user
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    /**
+     * user's name
+     */
     @Column(length = 20, nullable = false)
     private String name;
 
+    /**
+     * user's surname
+     */
     @Column(length = 20, nullable = true)
     private String surname;
 
+    /**
+     * type of shelter, that user chose
+     * {@link pro.sky.telegrambot.enums.ShelterType}
+     */
+    @Enumerated(EnumType.STRING)
     private ShelterType currentChosenShelter;
 
+    /**
+     * flag, that show, user chose shelter or not
+     */
+    @Column
     private boolean hasChosenShelter = false;
 
-    private BotState botState;
+    /**
+     * menu item, where user now
+     * {@link pro.sky.telegrambot.enums.BotState}
+     */
+    @Enumerated(EnumType.STRING)
+    private BotState botState = BotState.START;
 
 
-    public User(String name, String surname) {
+    public User(String name, String surname, ShelterType currentChosenShelter, boolean hasChosenShelter, BotState botState) {
         this.name = name;
         this.surname = surname;
+        this.currentChosenShelter = currentChosenShelter;
+        this.hasChosenShelter = hasChosenShelter;
+        this.botState = botState;
     }
+
 
     public User() {
     }
 
+
     public ShelterType getCurrentChosenShelter() {
-        return currentChosenShelter;
+            return currentChosenShelter;
+
     }
 
     public void setCurrentChosenShelter(ShelterType currentChosenShelter) {

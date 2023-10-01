@@ -5,71 +5,64 @@ import com.pengrad.telegrambot.model.PhotoSize;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
+/**
+ * class of users reports
+ */
 @Entity
 @Table(name = "pet_report")
 public class PetReport {
 
+    /**
+     * unique identifier of report
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20, nullable = false)
-    private String ownerName;
+    /**
+     * user associated with this appeal
+     */
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
-    @Column(length = 20, nullable = false)
-    private String ownerSurname;
-
+    /**
+     * date, when user send report
+     */
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
+    /**
+     * photo, that user send
+     */
     @Column(length = 20, nullable = true, columnDefinition = "oid")
     private PhotoSize[] photo;
 
+    /**
+     * user's report
+     */
     @Column(length = 2000, nullable = true)
     private String text;
 
+    /**
+     * number of report, that this user send
+     */
     @Column(name = "report_number", nullable = false)
     private int reportNumber;
 
-    @ManyToOne
-    private User user;
+    @Column(name = "chat_id", nullable = false)
+    private long chatId;
 
 
-    public PetReport(String ownerName, String ownerSurname, LocalDateTime dateTime, PhotoSize[] photo, String text) {
-        this.ownerName = ownerName;
-        this.ownerSurname = ownerSurname;
+    public PetReport(User user, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
+        this.user = user;
         this.dateTime = dateTime;
         this.photo = photo;
         this.text = text;
+        this.chatId = chatId;
     }
 
     public PetReport() {
-    }
-
-    public int getReportNumber() {
-        return reportNumber;
-    }
-
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public String getOwnerSurname() {
-        return ownerSurname;
-    }
-
-    public void setOwnerSurname(String ownerSurname) {
-        this.ownerSurname = ownerSurname;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public User getUser() {
@@ -78,6 +71,14 @@ public class PetReport {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
     public LocalDateTime getDateTime() {
@@ -103,4 +104,18 @@ public class PetReport {
     public void setText(String text) {
         this.text = text;
     }
+
+    public int getReportNumber() {
+        return reportNumber;
+    }
+
+    public void setReportNumber(int reportNumber) {
+        this.reportNumber = reportNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
+
+

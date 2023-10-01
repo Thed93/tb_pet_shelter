@@ -1,16 +1,27 @@
 package pro.sky.telegrambot.handle;
 
-import pro.sky.telegrambot.listener.ShelterType;
+import pro.sky.telegrambot.enums.ShelterType;
 
+
+/**
+ * class of texts to {@link pro.sky.telegrambot.handle.Handlers}
+ */
 public class HandlerText {
+
+    public String startingText(String userName){
+        return userName + " , приветствую вас!\n" +
+                "Я - учебный бот, симулирующий работу приюта для животных. \n" +
+                "Для дальнейшей работы напишите, какого типа приют вас интересует: \n" +
+                "'/dog' - для собак, '/cat' - для кошек";
+    }
 
 
     public String handleShelterConsultationText(String animalType){
-        String shelter_type = null;
+        String shelterType = null;
         if (animalType.equals(ShelterType.CAT_SHELTER)){
-            shelter_type="кошек";
+            shelterType="кошек";
         } else {
-            shelter_type="собак";
+            shelterType="собак";
         }
         return "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
                 "'/information' - Узнать информацию о приюте \n" +
@@ -159,6 +170,8 @@ public class HandlerText {
     public String volunteerText(){
         return "Вам скоро наберет один из наших волонтеров, всего хорошего!";
     }
+
+    public String reportText(){ return "Для отчета о вашем животном отправьте пожалуйста фото и текст.";}
 
 
 
