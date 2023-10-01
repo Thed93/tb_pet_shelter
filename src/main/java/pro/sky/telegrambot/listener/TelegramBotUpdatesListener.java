@@ -104,7 +104,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 user.setSurname(message.chat().lastName());
                 String text = message.text();
                 List<User> userList = userRepository.findAll();
-                if (userList.contains(userRepository.findUserByNameAndSurname(user.getName(), user.getSurname()))){
+                if (!(userList.contains(userRepository.findUserByNameAndSurname(user.getName(), user.getSurname())))){
                         userRepository.save(user);
                     }
                 switch (user.getBotState()) {
