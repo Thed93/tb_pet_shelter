@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.service.PetReportService;
@@ -38,21 +40,16 @@ public class TelegramBotController {
     }
 
     @Operation
-            (summary = "send message for user",
-                    responses = {
-                            @ApiResponse(
-                                    responseCode = "200",
+            (requestBody = @RequestBody(
                                     description = "message send",
                                     content = @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = TelegramBot.class))
-                                    )
-                            )
-                    },
+                                    )),
                     tags = "Telegram bot"
             )
     @GetMapping
-    public void sendMessage (@Parameter(description = "user's id", example = "12345") long chatId, @Parameter(description = "message", example = "u r frog") String text, @Nullable ParseMode parseMode){
+    public void sendMessage (@Parameter(description = "user's id", example = "12345")@RequestParam long chatId, @Parameter(description = "message", example = "u r frog")@RequestParam String text, @Nullable @RequestParam ParseMode parseMode){
         ResponseEntity.ok();
     }
 }

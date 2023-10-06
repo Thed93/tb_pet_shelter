@@ -16,8 +16,8 @@
             <column name="id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" />
             </column>
-            <column name="owner" type="VARCHAR(20)">
-                <constraints primaryKey="true" nullable="false"/>
+            <column name="user_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_user" references="user(userid)"/>
             </column>
             <column name="date_time" type="DATETIME(6)">
                 <constraints nullable="true"/>

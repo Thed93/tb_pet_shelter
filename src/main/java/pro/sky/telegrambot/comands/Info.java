@@ -1,10 +1,10 @@
 package pro.sky.telegrambot.comands;
 
 import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
-import pro.sky.telegrambot.service.UserService;
 
 /**
  *
@@ -18,13 +18,16 @@ public class Info {
      */
     private final TelegramBotService telegramBotService;
 
+    private final Commands commands;
+
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Info(TelegramBotService telegramBotService, Handlers handlers) {
+    public Info(TelegramBotService telegramBotService, Commands commands, Handlers handlers) {
         this.telegramBotService = telegramBotService;
+        this.commands = commands;
         this.handlers = handlers;
     }
 
@@ -35,21 +38,21 @@ public class Info {
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(User user, String text, Long chatId){
+    public void acceptInfoCommands(User user, Commands text, Long chatId){
         switch (text){
-            case "/about":
+            case ABOUT:
                 getShelterInfo(chatId, user);
                 break;
-            case "/workingHours":
+            case WORKING_HOURS:
                 workingHours(chatId, user);
                 break;
-            case "/securityNumber":
+            case SECURITY_NUMBER:
                 securityNumber(chatId, user);
                 break;
-            case "/safetyPrecautions":
+            case SAFETY_PRECAOTIONS:
                 safetyPrecautions(chatId, user);
                 break;
-            case "/help":
+            case HELP:
                 help(chatId);
                 break;
         }

@@ -50,18 +50,14 @@ public class AppealToVolunteerController {
         return appealToVolunteerService.saveAppeal(appealToVolonteer);
     }
 
-    @Operation
-            (summary = "find all appeals to volunteer",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "all appeals to volunteer",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = AppealToVolonteer.class))
+    @Operation(
+            requestBody = @RequestBody(
+                    description = "all appeals to volunteer",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AppealToVolonteer.class)
                             )
-                    )
-            },
+                    ),
             tags = "Appeal to volunteer"
             )
     @GetMapping

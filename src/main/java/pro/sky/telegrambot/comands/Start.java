@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.comands;
 
 import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.service.TelegramBotService;
@@ -33,9 +34,9 @@ public class Start {
      * @param text
      * @param chatId
      */
-    public void acceptStartCommands(User user, String text, long chatId) {
-        if (text.equals("/start")) {
-            starting(user, text, chatId);
+    public void acceptStartCommands(User user, Commands text, long chatId) {
+        if (text.equals(Commands.START)) {
+            starting(user, text.toString(), chatId);
         }
     }
 

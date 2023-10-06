@@ -11,6 +11,7 @@ import pro.sky.telegrambot.comands.*;
 import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.service.HelpService;
 import pro.sky.telegrambot.service.PetReportService;
@@ -47,6 +48,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final ChoseShelter choseShelter;
 
+    private final Commands commands;
+
 
     private final TelegramBot telegramBot;
 
@@ -65,10 +68,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
 
 
-    public TelegramBotUpdatesListener(TelegramBotService telegramBotService, Start start, ChoseShelter choseShelter, TelegramBot telegramBot, UserRepository userRepository, Menu menu, Info info, Adoption adoption, HelpService helpService, PetReportService petReportService) {
+    public TelegramBotUpdatesListener(TelegramBotService telegramBotService, Start start, ChoseShelter choseShelter, Commands commands, TelegramBot telegramBot, UserRepository userRepository, Menu menu, Info info, Adoption adoption, HelpService helpService, PetReportService petReportService) {
         this.telegramBotService = telegramBotService;
         this.start = start;
         this.choseShelter = choseShelter;
+        this.commands = commands;
         this.telegramBot = telegramBot;
         this.userRepository = userRepository;
         this.menu = menu;
@@ -109,19 +113,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
                 switch (user.getBotState()) {
                     case START:
-                        start.acceptStartCommands(user, text, chatId);
+                        start.acceptStartCommands(user, commands, chatId);
                         break;
                     case CHOOSE_SHELTER:
-                        choseShelter.acceptChoseShelterComand(user, text, chatId);
+                        choseShelter.acceptChoseShelterComand(user, commands, chatId);
                         break;
                     case MENU:
-                        menu.acceptInfoCommands(user, text, chatId);
+                        menu.acceptInfoCommands(user, commands, chatId);
                         break;
                     case INFO:
-                        info.acceptInfoCommands(user, text, chatId);
+                        info.acceptInfoCommands(user, commands, chatId);
                         break;
                     case ADOPTION:
-                        adoption.adoptionMenu(user, text, chatId);
+                        adoption.adoptionMenu(user, commands, chatId);
                         break;
                     case REPORT:
                         PetReport petReport = new PetReport(user, dateTime, message.photo(), text, chatId);

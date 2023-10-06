@@ -55,17 +55,13 @@ public class HelpController {
     }
 
     @Operation
-            (summary = "find all appeals",
-                    responses = {
-                            @ApiResponse(
-                                    responseCode = "200",
-                                    description = "all appeals",
-                                    content = @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = Help.class))
+            (requestBody = @RequestBody(
+                    description = "all appeals",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = Help.class))
                                     )
-                            )
-                    },
+                            ),
                     tags = "Help"
             )
     @GetMapping

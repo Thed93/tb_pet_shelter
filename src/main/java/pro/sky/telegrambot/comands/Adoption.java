@@ -1,10 +1,10 @@
 package pro.sky.telegrambot.comands;
 
 import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
-import pro.sky.telegrambot.service.UserService;
 
 /**
  * class for processing user's message
@@ -23,6 +23,10 @@ public class Adoption {
      */
     private final Handlers handlers;
 
+    /**
+     * class for processing user's commands
+     */
+
     public Adoption(TelegramBotService telegramBotService, Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
@@ -35,36 +39,37 @@ public class Adoption {
      * @param text user's message
      * @param chatId
      */
-    public void adoptionMenu(User user, String text, long chatId){
-        switch (text){
-            case "/welcomeRules":
+    public void adoptionMenu(User user, Commands text, long chatId){
+        Commands currentCommand = text;
+        switch (currentCommand){
+            case CAT:
                 welcomeRules(chatId, user);
                 break;
-            case "/docs":
+            case DOCS:
                 docs(chatId);
                 break;
-            case "/petTransportation":
+            case PET_TRANSPORTATION:
                 petTransportation(chatId);
                 break;
-            case "/babyPetHouse":
+            case BABY_PET_HOUSE:
                 babyPetHouse(chatId);
                 break;
-            case "/petHouse":
+            case PET_HOUSE:
                 petHouse(chatId);
                 break;
-            case "/specialPetHouse":
+            case SPECIAL_PET_HOUSE:
                 specialPetHouse(chatId);
                 break;
-            case "/adviceDogHandler":
+            case ADVICE_DOG_HANDLER:
                 adviceDogHandler(chatId);
                 break;
-            case "/dogHandler":
+            case DOG_HANDLER:
                 dogHandler(chatId);
                 break;
-            case "/refusePet":
+            case REFUSE_PET:
                 refusePet(chatId);
                 break;
-            case "/volunteer":
+            case VOLUNTEER:
                 volunteer(user, chatId);
                 break;
         }
@@ -181,4 +186,5 @@ public class Adoption {
         handlers.volunteer(user, chatId);
     }
 
-    }
+
+}

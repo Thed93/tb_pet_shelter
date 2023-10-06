@@ -2,6 +2,7 @@ package pro.sky.telegrambot.comands;
 
 import pro.sky.telegrambot.entity.User;
 import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
@@ -35,21 +36,21 @@ public class Menu {
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(User user, String text, Long chatId) {
+    public void acceptInfoCommands(User user, Commands text, Long chatId) {
         user.setBotState(BotState.INFO);
-        if (text.equals("/information")) {
+        if (text.equals(Commands.INFORMATION)) {
             user.setBotState(BotState.INFO);
             infoMenu(chatId, user);
         }
-        if (text.equals("/adoption")) {
+        if (text.equals(Commands.ADOPTION)) {
             user.setBotState(BotState.ADOPTION);
             adoptionMenu(chatId, user);
         }
-        if (text.equals("/report")) {
+        if (text.equals(Commands.REPORT)) {
             user.setBotState(BotState.REPORT);
-            reportMenu(user, text, chatId);
+            reportMenu(user, text.toString(), chatId);
         }
-        if (text.equals("/volunteer")) {
+        if (text.equals(Commands.VOLUNTEER)) {
             user.setBotState(BotState.VOLUNTEER);
             volunteer(user, chatId);
         }
