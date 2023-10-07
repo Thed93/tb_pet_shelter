@@ -28,6 +28,9 @@ public class AppealToVolonteer {
         this.user = user;
     }
 
+    public AppealToVolonteer() {
+    }
+
     public User getUser() {
         return user;
     }
@@ -38,5 +41,9 @@ public class AppealToVolonteer {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

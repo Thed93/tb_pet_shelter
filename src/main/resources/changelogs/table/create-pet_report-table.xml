@@ -10,14 +10,15 @@
             <not>
                 <tableExists tableName="pet_report"/>
             </not>
+
         </preConditions>
 
         <createTable tableName="pet_report">
             <column name="id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" />
             </column>
-            <column name="user_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_user" references="user(userid)"/>
+            <column name="userId" type="int">
+                <constraints nullable="false" foreignKeyName="fk_user" references="user(userId)"/>
             </column>
             <column name="date_time" type="DATETIME(6)">
                 <constraints nullable="true"/>
@@ -31,7 +32,7 @@
         </createTable>
 
         <createIndex tableName="pet_report" indexName="IDX_PET_REPORT_DATE_TIME">
-            <column name="date_time"></column>
+            <column name="date_time"/>
         </createIndex>
 
     </changeSet>

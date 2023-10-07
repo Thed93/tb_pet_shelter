@@ -12,7 +12,7 @@
             </not>
         </preConditions>
 
-        <createTable tableName="appeal_to_volunteer-table">
+        <createTable tableName="appeal_to_volunteer">
             <column name="user_id" type="int">
                 <constraints nullable="false" foreignKeyName="fk_user" references="user(userId)"/>
             </column>

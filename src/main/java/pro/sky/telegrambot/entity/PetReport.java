@@ -23,7 +23,6 @@ public class PetReport {
      * user associated with this appeal
      */
     @ManyToOne
-    @JoinColumn(name = "userId")
     private User user;
 
     /**
