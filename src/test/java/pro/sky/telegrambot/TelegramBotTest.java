@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.telegrambot.controller.TelegramBotController;
-import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.*;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,18 +29,31 @@ public class TelegramBotTest {
 
 
     @MockBean
+    private AppealToVolunteerService appealToVolunteerService;
+
+    @MockBean
+    private HelpService helpService;
+
+    @MockBean
+    private PetReportService petReportService;
+
+    @MockBean
     private TelegramBotService telegramBotService;
 
-    @InjectMocks
-    private TelegramBotController telegramBotController;
+    @MockBean
+    private UserService userService;
+
+
 
     @Test
     public void sendMessageTest() throws Exception {
-        JsonObject appealObject = new JsonObject();
-        final long id = 23;
-        final String text = "text";
 
-        when(telegramBotService.sendMessage((any(Long.class)),any(String.class))).thenReturn(text);
+        final String text = "text";
+        final long id = 123;
+
+        when(telegramBotService.sendMessage(any(Long.class)), any(String.class)).thenReturn(id, text);
+
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/tg_bot")
                         .accept(MediaType.APPLICATION_JSON))

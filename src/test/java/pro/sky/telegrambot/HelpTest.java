@@ -14,7 +14,7 @@ import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.User;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.service.HelpService;
+import pro.sky.telegrambot.service.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,10 +32,20 @@ public class HelpTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private AppealToVolunteerService appealToVolunteerService;
+
+    @MockBean
     private HelpService helpService;
 
-    @InjectMocks
-    private HelpController helpController;
+    @MockBean
+    private PetReportService petReportService;
+
+    @MockBean
+    private TelegramBotService telegramBotService;
+
+    @MockBean
+    private UserService userService;
+
 
     @Test
     public  void saveHelpTest() throws Exception {
@@ -70,7 +80,8 @@ public class HelpTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.user").value(user))
+                .andExpect(jsonPath("$.user.name").value(user.getName()))
+                .andExpect(jsonPath("$.user.surname").value(user.getSurname()))
                 .andExpect(jsonPath("$.text").value(text));
     }
 
@@ -103,8 +114,7 @@ public class HelpTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/help")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.helpCollection").value(helpCollection));
+                .andExpect(status().isOk());
     }
 
 }

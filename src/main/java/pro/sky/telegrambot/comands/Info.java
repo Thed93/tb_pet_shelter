@@ -18,16 +18,14 @@ public class Info {
      */
     private final TelegramBotService telegramBotService;
 
-    private final Commands commands;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Info(TelegramBotService telegramBotService, Commands commands, Handlers handlers) {
+    public Info(TelegramBotService telegramBotService,Handlers handlers) {
         this.telegramBotService = telegramBotService;
-        this.commands = commands;
         this.handlers = handlers;
     }
 

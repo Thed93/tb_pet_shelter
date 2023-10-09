@@ -13,7 +13,7 @@ import pro.sky.telegrambot.controller.UserController;
 import pro.sky.telegrambot.entity.User;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.service.UserService;
+import pro.sky.telegrambot.service.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +30,20 @@ public class UserTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private AppealToVolunteerService appealToVolunteerService;
+
+    @MockBean
+    private HelpService helpService;
+
+    @MockBean
+    private PetReportService petReportService;
+
+    @MockBean
+    private TelegramBotService telegramBotService;
+
+    @MockBean
     private UserService userService;
 
-    @InjectMocks
-    private UserController userController;
 
     @Test
     public void saveUserTest() throws Exception {
@@ -52,7 +62,8 @@ public class UserTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user").value(user));
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.surname").value(user.getSurname()));
     }
 
     @Test

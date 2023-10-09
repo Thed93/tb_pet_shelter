@@ -124,7 +124,7 @@ public class PetReportService {
      *
      * @return all saving reports from chosen person
      */
-        public Collection<PetReport>getReportsByNameAndSurname(String name, String surname){
+        public Collection<PetReport> getReportsByUserNameAndSurname(String name, String surname){
         return petReportRepository.findReportsByNameAndSurname(name, surname);
         }
 
