@@ -10,7 +10,7 @@ import javax.persistence.*;
  * class of users
  */
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class User {
 
     /**

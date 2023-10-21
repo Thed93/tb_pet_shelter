@@ -18,7 +18,7 @@
                 <constraints primaryKey="true" />
             </column>
             <column name="userId" type="int">
-                <constraints nullable="false" foreignKeyName="fk_user" references="user(userId)"/>
+                <constraints nullable="false" foreignKeyName="fk_user3" references="&quot;user&quot;(&quot;userId&quot;)"/>
             </column>
             <column name="date_time" type="DATETIME(6)">
                 <constraints nullable="true"/>

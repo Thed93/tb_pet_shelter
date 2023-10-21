@@ -17,7 +17,7 @@
                 <constraints primaryKey="true" />
             </column>
             <column name="user_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_user" references="user(userid)"/>
+                <constraints nullable="false" foreignKeyName="fk_user2" references="&quot;user&quot;(&quot;userId&quot;)"/>
             </column>
             <column name="text" type="VARCHAR(20)">
                 <constraints nullable="false"/>
