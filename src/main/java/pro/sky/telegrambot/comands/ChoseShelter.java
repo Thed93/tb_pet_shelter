@@ -1,6 +1,6 @@
 package pro.sky.telegrambot.comands;
 
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -35,7 +35,7 @@ public class ChoseShelter {
      * @param text
      * @param chatId
      */
-    public void acceptChoseShelterComand(User user, Commands text, long chatId){
+    public void acceptChoseShelterComand(UserChat user, Commands text, long chatId){
          if(text.equals("/dog") || text.equals("/cat") && user.getBotState() == BotState.CHOOSE_SHELTER){
             shelterType(user, text, chatId);
         }
@@ -53,7 +53,7 @@ public class ChoseShelter {
      * @param chatId
      */
 
-    private final void shelterType(User user, Commands text, long chatId) {
+    private final void shelterType(UserChat user, Commands text, long chatId) {
         if (text.equals(Commands.DOG)) {
             user.setBotState(BotState.MENU);
             user.setCurrentChosenShelter(ShelterType.DOG_SHELTER);

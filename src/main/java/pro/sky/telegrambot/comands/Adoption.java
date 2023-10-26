@@ -1,6 +1,6 @@
 package pro.sky.telegrambot.comands;
 
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
@@ -39,7 +39,7 @@ public class Adoption {
      * @param text user's message
      * @param chatId
      */
-    public void adoptionMenu(User user, Commands text, long chatId){
+    public void adoptionMenu(UserChat user, Commands text, long chatId){
         Commands currentCommand = text;
         switch (currentCommand){
             case CAT:
@@ -83,7 +83,7 @@ public class Adoption {
      * @param chatId
      * @param user
      */
-    private final void welcomeRules (Long chatId, User user){
+    private final void welcomeRules (Long chatId, UserChat user){
         handlers.welcomeRules(chatId, user.getCurrentChosenShelter());
     }
 
@@ -177,12 +177,12 @@ public class Adoption {
     /**
      * method, if user send {@code "/volunteer" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(User, long)}
+     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
      *
      * @param user
      * @param chatId
      */
-    private final void volunteer(User user, Long chatId){
+    private final void volunteer(UserChat user, Long chatId){
         handlers.volunteer(user, chatId);
     }
 

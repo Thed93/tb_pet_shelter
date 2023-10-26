@@ -1,12 +1,11 @@
 package pro.sky.telegrambot.comands;
 
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
-import pro.sky.telegrambot.service.UserService;
 
 /**
  * class for processing user's message
@@ -36,7 +35,7 @@ public class Menu {
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(User user, Commands text, Long chatId) {
+    public void acceptInfoCommands(UserChat user, Commands text, Long chatId) {
         user.setBotState(BotState.INFO);
         if (text.equals(Commands.INFORMATION)) {
             user.setBotState(BotState.INFO);
@@ -65,7 +64,7 @@ public class Menu {
      * @param chatId
      * @param user
      */
-    private final void infoMenu (Long chatId, User user){
+    private final void infoMenu (Long chatId, UserChat user){
         handlers.handleAdoptionConsultation(chatId, user.getCurrentChosenShelter());
     }
 
@@ -77,32 +76,32 @@ public class Menu {
      * @param chatId
      * @param user
      */
-    private final void adoptionMenu (Long chatId, User user){
+    private final void adoptionMenu (Long chatId, UserChat user){
         handlers.howToTakePet(chatId, user.getCurrentChosenShelter());
     }
 
     /**
      * method, if user send {@code "/report" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#reportMenu(User, String, long)}
+     * use method {@link pro.sky.telegrambot.handle.Handlers#reportMenu(UserChat, String, long)}
      *
      * @param user
      * @param text
      * @param chatId
      */
-    private void reportMenu(User user, String text, long chatId){
+    private void reportMenu(UserChat user, String text, long chatId){
         handlers.reportMenu(user, text, chatId);
     }
 
     /**
      * method, if user send {@code "/volunteer" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(User, long)}
+     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
      *
      * @param user
      * @param chatId
      */
-    private void volunteer(User user, long chatId){
+    private void volunteer(UserChat user, long chatId){
         handlers.volunteer(user, chatId);
     }
 }

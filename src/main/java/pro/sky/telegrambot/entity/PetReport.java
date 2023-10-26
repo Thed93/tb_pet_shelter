@@ -23,7 +23,7 @@ public class PetReport {
      * user associated with this appeal
      */
     @ManyToOne
-    private User user;
+    private UserChat user;
 
     /**
      * date, when user send report
@@ -53,7 +53,7 @@ public class PetReport {
     private long chatId;
 
 
-    public PetReport(User user, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
+    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
         this.user = user;
         this.dateTime = dateTime;
         this.photo = photo;
@@ -64,11 +64,11 @@ public class PetReport {
     public PetReport() {
     }
 
-    public User getUser() {
+    public UserChat getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserChat user) {
         this.user = user;
     }
 

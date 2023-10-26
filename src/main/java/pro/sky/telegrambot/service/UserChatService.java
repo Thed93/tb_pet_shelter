@@ -4,32 +4,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.entity.User;
-import pro.sky.telegrambot.enums.BotState;
-import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.repository.UserRepository;
+import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.repository.UserChatRepository;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * service for processing commands
  */
 @Service
-public class UserService {
+public class UserChatService {
 
     /**
      * class for adding message to programmer
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserChatService.class);
 
     /**
      * repository for data access
      */
-    private final UserRepository userRepository;
+    private final UserChatRepository userChatRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserChatService(UserChatRepository userChatRepository) {
+        this.userChatRepository = userChatRepository;
     }
 
     /**
@@ -41,11 +38,11 @@ public class UserService {
      * @param user
      * @return saving user
      */
-    public User saveUser(User user){
+    public UserChat saveUser(UserChat user){
         if (user.getSurname() == null){
             user.setSurname("Иванов");
         }
-        return userRepository.save(user);
+        return userChatRepository.save(user);
     }
 
     /**
@@ -55,8 +52,8 @@ public class UserService {
      *
      * @return all users from database
      */
-    public Collection<User> getAllUsers (){
-        return userRepository.findAll();
+    public Collection<UserChat> getAllUsers (){
+        return userChatRepository.findAll();
     }
 
 }

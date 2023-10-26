@@ -21,21 +21,21 @@ public class AppealToVolonteer {
      */
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private UserChat user;
 
 
-    public AppealToVolonteer(User user) {
+    public AppealToVolonteer(UserChat user) {
         this.user = user;
     }
 
     public AppealToVolonteer() {
     }
 
-    public User getUser() {
+    public UserChat getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserChat user) {
         this.user = user;
     }
 
