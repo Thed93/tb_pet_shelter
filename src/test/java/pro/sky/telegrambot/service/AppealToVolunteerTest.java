@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.telegrambot.entity.AppealToVolonteer;
+import pro.sky.telegrambot.entity.AppealToVolunteer;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -29,14 +29,14 @@ public class AppealToVolunteerTest {
     private AppealToVolunteerService appealToVolunteerService;
 
     final UserChat user = new UserChat("Леха", "Мятый", ShelterType.DOG_SHELTER, true, BotState.START);
-    AppealToVolonteer appeal = new AppealToVolonteer(user);
+    AppealToVolunteer appeal = new AppealToVolunteer(user);
 
-    List<AppealToVolonteer> appeals = new ArrayList<>();
+    List<AppealToVolunteer> appeals = new ArrayList<>();
 
 
     @Test
     void save(){
-        when(appealToVolunteerRepository.save(any(AppealToVolonteer.class))).thenReturn(appeal);
+        when(appealToVolunteerRepository.save(any(AppealToVolunteer.class))).thenReturn(appeal);
         appealToVolunteerService.saveAppeal(appeal);
         verify(appealToVolunteerRepository, Mockito.times(1)).save(appeal);
     }

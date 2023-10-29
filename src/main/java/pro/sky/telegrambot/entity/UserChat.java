@@ -10,7 +10,7 @@ import javax.persistence.*;
  * class of users
  */
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "user")
 public class UserChat {
 
     /**
@@ -18,6 +18,7 @@ public class UserChat {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     /**
@@ -36,21 +37,23 @@ public class UserChat {
      * type of shelter, that user chose
      * {@link pro.sky.telegrambot.enums.ShelterType}
      */
+    @Column(name = "current_chosen_shelter")
     @Enumerated(EnumType.STRING)
     private ShelterType currentChosenShelter;
 
     /**
      * flag, that show, user chose shelter or not
      */
-    @Column
+    @Column(name = "has_chosen_shelter")
     private boolean hasChosenShelter = false;
 
     /**
      * menu item, where user now
      * {@link pro.sky.telegrambot.enums.BotState}
      */
+    @Column(name = "bot_state")
     @Enumerated(EnumType.STRING)
-    private BotState botState = BotState.START;
+    private BotState botState;
 
 
     public UserChat(String name, String surname, ShelterType currentChosenShelter, boolean hasChosenShelter, BotState botState) {

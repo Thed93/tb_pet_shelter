@@ -1,11 +1,13 @@
 package pro.sky.telegrambot.handle;
 
+import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.ShelterType;
 
 
 /**
  * class of texts to {@link pro.sky.telegrambot.handle.Handlers}
  */
+@Component
 public class HandlerText {
 
     public String startingText(String userName){

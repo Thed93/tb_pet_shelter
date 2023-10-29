@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.telegrambot.entity.AppealToVolonteer;
+import pro.sky.telegrambot.entity.AppealToVolunteer;
 import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
@@ -46,7 +46,7 @@ public class TelegramBotApplicationTest {
     private TelegramBotService telegramBotService;
 
     @Mock
-    private AppealToVolonteer appeal;
+    private AppealToVolunteer appeal;
 
     @Mock
     private Update update;
