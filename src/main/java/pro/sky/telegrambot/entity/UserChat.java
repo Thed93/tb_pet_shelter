@@ -10,7 +10,8 @@ import javax.persistence.*;
  * class of users
  */
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
+
 public class UserChat {
 
     /**
@@ -53,7 +54,7 @@ public class UserChat {
      */
     @Column(name = "bot_state")
     @Enumerated(EnumType.STRING)
-    private BotState botState;
+    private BotState botState = BotState.START;
 
 
     public UserChat(String name, String surname, ShelterType currentChosenShelter, boolean hasChosenShelter, BotState botState) {

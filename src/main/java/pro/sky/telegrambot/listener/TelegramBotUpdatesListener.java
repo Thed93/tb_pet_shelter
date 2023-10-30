@@ -11,7 +11,9 @@ import pro.sky.telegrambot.comands.*;
 import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
+import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.repository.UserChatRepository;
 import pro.sky.telegrambot.service.HelpService;
 import pro.sky.telegrambot.service.PetReportService;
@@ -108,9 +110,21 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 user.setSurname(message.chat().lastName());
                 String text = message.text();
                 List<UserChat> userList = userChatRepository.findAll();
+                UserChat testUser = new UserChat("Леха", "Мятый", ShelterType.DOG_SHELTER, true, BotState.START);
                 if (!(userList.contains(userChatRepository.findUserByNameAndSurname(user.getName(), user.getSurname())))){
                         userChatRepository.save(user);
                     }
+                if (user == null ){
+                    if (!(userList.contains(testUser))){
+                        userChatRepository.save(testUser);
+                    }
+                    user.setName(testUser.getName());
+                    user.setSurname(testUser.getSurname());
+                    user.setBotState(testUser.getBotState());
+                    user.setCurrentChosenShelter(testUser.getCurrentChosenShelter());
+                    user.setUserId(123L);
+                    user.setHasChosenShelter(testUser.isHasChosenShelter());
+                }
                 switch (user.getBotState()) {
                     case START:
                         start.acceptStartCommands(user, commands, chatId);
