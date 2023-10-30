@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.comands;
 
+import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
@@ -10,6 +11,7 @@ import pro.sky.telegrambot.service.TelegramBotService;
 /**
  * class for processing user's message
  */
+@Component
 public class Menu {
 
     /**

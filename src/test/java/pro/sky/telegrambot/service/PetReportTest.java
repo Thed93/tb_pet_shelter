@@ -31,7 +31,7 @@ public class PetReportTest {
 
     final UserChat user = new UserChat("Леха", "Мятый", ShelterType.DOG_SHELTER, true, BotState.START);
 
-    final PetReport petReport = new PetReport(user, LocalDateTime.now(), null, "Вск хорошо", 12);
+    final PetReport petReport = new PetReport(user, LocalDateTime.now(), null, "Вск хорошо", 12L);
 
     final List<PetReport> petReports = new ArrayList<>();
     @Test

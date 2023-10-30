@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.comands;
 
+import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -11,6 +12,7 @@ import pro.sky.telegrambot.service.TelegramBotService;
  * class for processing user's message
  *
  */
+@Component
 public class Info {
 
     /**
@@ -47,7 +49,7 @@ public class Info {
             case SECURITY_NUMBER:
                 securityNumber(chatId, user);
                 break;
-            case SAFETY_PRECAOTIONS:
+            case SAFETY_PRECAUTIONS:
                 safetyPrecautions(chatId, user);
                 break;
             case HELP:
