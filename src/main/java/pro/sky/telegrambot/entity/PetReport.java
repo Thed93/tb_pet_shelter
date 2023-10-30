@@ -23,6 +23,7 @@ public class PetReport {
      * user associated with this appeal
      */
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserChat user;
 
     /**
@@ -34,7 +35,7 @@ public class PetReport {
     /**
      * photo, that user send
      */
-    @Column(length = 20, nullable = true, columnDefinition = "oid")
+    @Column(length = 20, nullable = true, columnDefinition = "bytea")
     private PhotoSize[] photo;
 
     /**
@@ -47,13 +48,13 @@ public class PetReport {
      * number of report, that this user send
      */
     @Column(name = "report_number", nullable = false)
-    private int reportNumber;
+    private Long reportNumber;
 
     @Column(name = "chat_id", nullable = false)
-    private long chatId;
+    private Long chatId;
 
 
-    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text, long chatId) {
+    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text, Long chatId) {
         this.user = user;
         this.dateTime = dateTime;
         this.photo = photo;
@@ -104,11 +105,11 @@ public class PetReport {
         this.text = text;
     }
 
-    public int getReportNumber() {
+    public Long getReportNumber() {
         return reportNumber;
     }
 
-    public void setReportNumber(int reportNumber) {
+    public void setReportNumber(Long reportNumber) {
         this.reportNumber = reportNumber;
     }
 

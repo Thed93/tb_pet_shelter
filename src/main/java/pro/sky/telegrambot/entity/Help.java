@@ -20,6 +20,7 @@ public class Help {
      * user associated with this appeal
      */
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserChat user;
 
     /**

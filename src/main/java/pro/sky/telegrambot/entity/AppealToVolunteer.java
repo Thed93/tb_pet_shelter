@@ -6,8 +6,8 @@ import javax.persistence.*;
  * class of user's appealing to volunteer
  */
 @Entity
-@Table(name = "appeal_to_volonteer")
-public class AppealToVolonteer {
+@Table(name = "appeal_to_volunteer")
+public class AppealToVolunteer {
 
     /**
      * unique identifier of appealing
@@ -24,11 +24,11 @@ public class AppealToVolonteer {
     private UserChat user;
 
 
-    public AppealToVolonteer(UserChat user) {
+    public AppealToVolunteer(UserChat user) {
         this.user = user;
     }
 
-    public AppealToVolonteer() {
+    public AppealToVolunteer() {
     }
 
     public UserChat getUser() {

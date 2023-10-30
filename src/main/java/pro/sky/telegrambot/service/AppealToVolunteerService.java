@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.entity.AppealToVolonteer;
+import pro.sky.telegrambot.entity.AppealToVolunteer;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.AppealToVolunteerRepository;
 
@@ -46,14 +46,14 @@ public class AppealToVolunteerService {
      * <br>
      * use repository method {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
      *
-     * @param appealToVolonteer building in:
+     * @param appealToVolunteer building in:
      * <br>{@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}  }
      *
      * @return saving appeal
      */
     @Transactional
-    public AppealToVolonteer saveAppeal (AppealToVolonteer appealToVolonteer){
-        return appealToVolunteerRepository.save(appealToVolonteer);
+    public AppealToVolunteer saveAppeal (AppealToVolunteer appealToVolunteer){
+        return appealToVolunteerRepository.save(appealToVolunteer);
     }
 
     /**
@@ -63,7 +63,7 @@ public class AppealToVolunteerService {
      * use repository method {@link JpaRepository#findAll()}
      * @return all saving appeals
      */
-    public Collection<AppealToVolonteer> getAllAppeals(){
+    public Collection<AppealToVolunteer> getAllAppeals(){
         return appealToVolunteerRepository.findAll();
     }
 }
