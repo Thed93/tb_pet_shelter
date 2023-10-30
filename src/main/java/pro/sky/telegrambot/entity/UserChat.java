@@ -10,8 +10,8 @@ import javax.persistence.*;
  * class of users
  */
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "\"user\"")
+public class UserChat {
 
     /**
      * unique identifier of user
@@ -53,7 +53,7 @@ public class User {
     private BotState botState = BotState.START;
 
 
-    public User(String name, String surname, ShelterType currentChosenShelter, boolean hasChosenShelter, BotState botState) {
+    public UserChat(String name, String surname, ShelterType currentChosenShelter, boolean hasChosenShelter, BotState botState) {
         this.name = name;
         this.surname = surname;
         this.currentChosenShelter = currentChosenShelter;
@@ -62,7 +62,7 @@ public class User {
     }
 
 
-    public User() {
+    public UserChat() {
     }
 
 

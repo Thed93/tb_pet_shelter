@@ -1,10 +1,10 @@
 package pro.sky.telegrambot.comands;
 
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
-import pro.sky.telegrambot.service.UserService;
 
 /**
  *
@@ -18,12 +18,13 @@ public class Info {
      */
     private final TelegramBotService telegramBotService;
 
+
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Info(TelegramBotService telegramBotService, Handlers handlers) {
+    public Info(TelegramBotService telegramBotService,Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
     }
@@ -35,21 +36,21 @@ public class Info {
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(User user, String text, Long chatId){
+    public void acceptInfoCommands(UserChat user, Commands text, Long chatId){
         switch (text){
-            case "/about":
+            case ABOUT:
                 getShelterInfo(chatId, user);
                 break;
-            case "/workingHours":
+            case WORKING_HOURS:
                 workingHours(chatId, user);
                 break;
-            case "/securityNumber":
+            case SECURITY_NUMBER:
                 securityNumber(chatId, user);
                 break;
-            case "/safetyPrecautions":
+            case SAFETY_PRECAOTIONS:
                 safetyPrecautions(chatId, user);
                 break;
-            case "/help":
+            case HELP:
                 help(chatId);
                 break;
         }
@@ -64,7 +65,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void getShelterInfo (Long chatId, User user){
+    private final void getShelterInfo (Long chatId, UserChat user){
         handlers.aboutShelter(chatId, user.getCurrentChosenShelter());
     }
 
@@ -76,7 +77,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void workingHours(Long chatId, User user){
+    private final void workingHours(Long chatId, UserChat user){
         handlers.workingHours(chatId, user.getCurrentChosenShelter());
     }
 
@@ -88,7 +89,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void securityNumber (Long chatId, User user){
+    private final void securityNumber (Long chatId, UserChat user){
         handlers.securityNumber(chatId, user.getCurrentChosenShelter());
     }
 
@@ -100,7 +101,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void safetyPrecautions (Long chatId, User user){
+    private final void safetyPrecautions (Long chatId, UserChat user){
         handlers.safetyPrecautions(chatId, user.getCurrentChosenShelter());
     }
 

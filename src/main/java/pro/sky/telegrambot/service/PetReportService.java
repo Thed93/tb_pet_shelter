@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.PetReportRepository;
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public class PetReportService {
     private final TelegramBotService telegramBotService;
 
 
-    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService, User user) {
+    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService, UserChat user) {
         this.petReportRepository = petReportRepository;
         this.telegramBotService = telegramBotService;
     }
@@ -124,7 +124,7 @@ public class PetReportService {
      *
      * @return all saving reports from chosen person
      */
-        public Collection<PetReport>getReportsByNameAndSurname(String name, String surname){
+        public Collection<PetReport> getReportsByUserNameAndSurname(String name, String surname){
         return petReportRepository.findReportsByNameAndSurname(name, surname);
         }
 

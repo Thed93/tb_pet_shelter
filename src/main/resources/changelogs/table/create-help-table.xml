@@ -16,8 +16,8 @@
             <column name="id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" />
             </column>
-            <column name="user" type=>
-                <constraints />
+            <column name="user_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_user2" references="&quot;user&quot;(&quot;userId&quot;)"/>
             </column>
             <column name="text" type="VARCHAR(20)">
                 <constraints nullable="false"/>

@@ -2,7 +2,7 @@ package pro.sky.telegrambot.handle;
 
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.AppealToVolonteer;
-import pro.sky.telegrambot.entity.User;
+import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.service.AppealToVolunteerService;
 import pro.sky.telegrambot.service.TelegramBotService;
@@ -112,13 +112,13 @@ public class Handlers {
 
     }
 
-    public void volunteer(User user, long chatId) {
+    public void volunteer(UserChat user, long chatId) {
         telegramBotService.sendMessage(chatId, handlerText.volunteerText());
         AppealToVolonteer appealToVolonteer = new AppealToVolonteer(user);
         appealToVolunteerService.saveAppeal(appealToVolonteer);
     }
 
-    public void reportMenu(User user, String text, long chatId){
+    public void reportMenu(UserChat user, String text, long chatId){
         telegramBotService.sendMessage(chatId, handlerText.reportText());
     }
 }

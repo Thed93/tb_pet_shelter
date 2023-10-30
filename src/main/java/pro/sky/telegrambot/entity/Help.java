@@ -20,8 +20,7 @@ public class Help {
      * user associated with this appeal
      */
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    private UserChat user;
 
     /**
      * user's appeal
@@ -29,16 +28,23 @@ public class Help {
     @Column(length = 2000, nullable = true)
     private String text;
 
-    public Help(User user, String text) {
+    public Help(UserChat user, String text) {
         this.user = user;
         this.text = text;
     }
 
-    public User getUser() {
+    public Help() {
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UserChat getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserChat user) {
         this.user = user;
     }
 

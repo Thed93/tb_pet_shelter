@@ -12,11 +12,11 @@ import java.util.List;
 public interface PetReportRepository extends JpaRepository<PetReport, Long> {
 
     /**
-     * method to find user by name and surname
+     * method to find user by Name and Surname
      *
-     * @param name
-     * @param surname
+     * @param Name
+     * @param Surname
      * @return
      */
-    List<PetReport> findReportsByNameAndSurname(String name, String surname);
+    List<PetReport> findReportsByNameAndSurname(String Name, String Surname);
 }

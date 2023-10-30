@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.comands.*;
 import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.User;
-import pro.sky.telegrambot.repository.UserRepository;
+import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.enums.Commands;
+import pro.sky.telegrambot.repository.UserChatRepository;
 import pro.sky.telegrambot.service.HelpService;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
@@ -36,7 +37,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * user, that appealed to Telegram - bot
      */
-    private User user;
+    private UserChat user;
 
     /**
      * copy of Telegram - bot for sending message
@@ -47,10 +48,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final ChoseShelter choseShelter;
 
+    private final Commands commands;
+
 
     private final TelegramBot telegramBot;
 
-    private final UserRepository userRepository;
+    private final UserChatRepository userChatRepository;
 
     private final Menu menu;
 
@@ -65,12 +68,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
 
 
-    public TelegramBotUpdatesListener(TelegramBotService telegramBotService, Start start, ChoseShelter choseShelter, TelegramBot telegramBot, UserRepository userRepository, Menu menu, Info info, Adoption adoption, HelpService helpService, PetReportService petReportService) {
+    public TelegramBotUpdatesListener(TelegramBotService telegramBotService, Start start, ChoseShelter choseShelter, Commands commands, TelegramBot telegramBot, UserChatRepository userChatRepository, Menu menu, Info info, Adoption adoption, HelpService helpService, PetReportService petReportService) {
         this.telegramBotService = telegramBotService;
         this.start = start;
         this.choseShelter = choseShelter;
+        this.commands = commands;
         this.telegramBot = telegramBot;
-        this.userRepository = userRepository;
+        this.userChatRepository = userChatRepository;
         this.menu = menu;
         this.info = info;
         this.adoption = adoption;
@@ -103,25 +107,25 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 user.setName(message.chat().firstName());
                 user.setSurname(message.chat().lastName());
                 String text = message.text();
-                List<User> userList = userRepository.findAll();
-                if (!(userList.contains(userRepository.findUserByNameAndSurname(user.getName(), user.getSurname())))){
-                        userRepository.save(user);
+                List<UserChat> userList = userChatRepository.findAll();
+                if (!(userList.contains(userChatRepository.findUserByNameAndSurname(user.getName(), user.getSurname())))){
+                        userChatRepository.save(user);
                     }
                 switch (user.getBotState()) {
                     case START:
-                        start.acceptStartCommands(user, text, chatId);
+                        start.acceptStartCommands(user, commands, chatId);
                         break;
                     case CHOOSE_SHELTER:
-                        choseShelter.acceptChoseShelterComand(user, text, chatId);
+                        choseShelter.acceptChoseShelterComand(user, commands, chatId);
                         break;
                     case MENU:
-                        menu.acceptInfoCommands(user, text, chatId);
+                        menu.acceptInfoCommands(user, commands, chatId);
                         break;
                     case INFO:
-                        info.acceptInfoCommands(user, text, chatId);
+                        info.acceptInfoCommands(user, commands, chatId);
                         break;
                     case ADOPTION:
-                        adoption.adoptionMenu(user, text, chatId);
+                        adoption.adoptionMenu(user, commands, chatId);
                         break;
                     case REPORT:
                         PetReport petReport = new PetReport(user, dateTime, message.photo(), text, chatId);
