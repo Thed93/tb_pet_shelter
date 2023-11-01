@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.comands;
 
+import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
@@ -41,7 +42,7 @@ public class Adoption {
      * @param text user's message
      * @param chatId
      */
-    public void adoptionMenu(UserChat user, Commands text, long chatId){
+    public void adoptionMenu(UserChat user, Commands text, long chatId) throws UnsatisfiedDependencyException {
         Commands currentCommand = text;
         switch (currentCommand){
             case CAT:

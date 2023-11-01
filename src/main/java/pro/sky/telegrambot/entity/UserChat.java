@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.entity;
 
+import org.springframework.beans.factory.annotation.Value;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
 
@@ -54,6 +55,7 @@ public class UserChat {
      */
     @Column(name = "bot_state")
     @Enumerated(EnumType.STRING)
+    @Value("")
     private BotState botState = BotState.START;
 
 

@@ -8,13 +8,23 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public enum BotState {
-    START,
-    CHOOSE_SHELTER,
-    MENU,
-    INFO,
-    ADOPTION,
-    REPORT,
-    VOLUNTEER,
-    HELP
+    START("START"),
+    CHOOSE_SHELTER("CHOOSE_SHELTER"),
+    MENU("MENU"),
+    INFO("INFO"),
+    ADOPTION("ADOPTION"),
+    REPORT("REPORT"),
+    VOLUNTEER("VOLUNTEER"),
+    HELP("HELP");
+
+    private final String state;
+
+    BotState(String state) {
+        this.state = state;
+    }
+
+    public String getState() {
+        return state;
+    }
 }
 
