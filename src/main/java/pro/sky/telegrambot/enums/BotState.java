@@ -1,6 +1,8 @@
 package pro.sky.telegrambot.enums;
 
 
+import org.springframework.stereotype.Component;
+
 /**
  * item, that show, where is user now
  */

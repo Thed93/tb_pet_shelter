@@ -15,8 +15,8 @@ public class UserChat {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     /**
      * user's name
@@ -50,18 +50,21 @@ public class UserChat {
     @Column(name = "bot_state")
     private String botState;
 
-    public UserChat(Long id, String name, String surname) {
-        this.id = id;
+    public UserChat(Long userId, String name, String surname, String currentChosenShelter, boolean hasChosenShelter, String botState) {
+        this.userId = userId;
         this.name = name;
         this.surname = surname;
+        this.currentChosenShelter = currentChosenShelter;
+        this.hasChosenShelter = hasChosenShelter;
+        this.botState = botState;
     }
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -109,18 +112,21 @@ public class UserChat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserChat userChat = (UserChat) o;
-        return hasChosenShelter == userChat.hasChosenShelter && Objects.equals(id, userChat.id) && Objects.equals(name, userChat.name) && Objects.equals(surname, userChat.surname) && Objects.equals(currentChosenShelter, userChat.currentChosenShelter) && Objects.equals(botState, userChat.botState);
+        return hasChosenShelter == userChat.hasChosenShelter && Objects.equals(userId, userChat.userId) && Objects.equals(name, userChat.name) && Objects.equals(surname, userChat.surname) && Objects.equals(currentChosenShelter, userChat.currentChosenShelter) && Objects.equals(botState, userChat.botState);
+    }
+
+    public UserChat() {
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, currentChosenShelter, hasChosenShelter, botState);
+        return Objects.hash(userId, name, surname, currentChosenShelter, hasChosenShelter, botState);
     }
 
     @Override
     public String toString() {
         return "UserChat{" +
-                "userId=" + id +
+                "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", currentChosenShelter='" + currentChosenShelter + '\'' +

@@ -8,34 +8,73 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.commands.*;
+import pro.sky.telegrambot.entity.Help;
+import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
-import pro.sky.telegrambot.enums.Commands;
+import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
+import pro.sky.telegrambot.service.HelpService;
+import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
+
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import static pro.sky.telegrambot.enums.BotState.START;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
-    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    /**
+     * class for adding message to programmer
+     */
+    private final Logger LOGGER = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    private boolean hasChosenShelter;
-    private String chosenShelter;
+    private final Start start;
+
+    private final Menu menu;
+
+    private final Adoption adoption;
+
+    private final Info info;
+
+    private final ChoseShelter choseShelter;
 
     private final UserChatRepository userChatRepository;
 
-    @Autowired
-    private TelegramBotService telegramBotService;
+    private final PetReportService petReportService;
 
+    private final HelpService helpService;
+
+    private final UserChatService userChatService;
+
+    private final TelegramBotService telegramBotService;
+
+    private final Handlers handlers;
+
+    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
+        this.start = start;
+        this.menu = menu;
+        this.adoption = adoption;
+        this.info = info;
+        this.choseShelter = choseShelter;
+        this.userChatRepository = userChatRepository;
+        this.petReportService = petReportService;
+        this.helpService = helpService;
+        this.userChatService = userChatService;
+        this.telegramBotService = telegramBotService;
+        this.handlers = handlers;
+        this.telegramBot = telegramBot;
+    }
 
     @Autowired
     private TelegramBot telegramBot;
 
-    public TelegramBotUpdatesListener(UserChatRepository userChatRepository) {
-        this.userChatRepository = userChatRepository;
-    }
 
     @PostConstruct
     public void init() {
@@ -45,42 +84,58 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
-            logger.info("Processing update: {}", update);
+            LOGGER.info("Processing update: {}", update);
             Message message = update.message();
+            String userName = message.chat().firstName();
+            String userSurname = message.chat().lastName();
             Long chatId = message.chat().id();
+            LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
-                String userName = message.chat().firstName();
-                String userSurname = message.chat().lastName();
+                List<UserChat> userList = userChatRepository.findAll();
                 String text = message.text();
-                List<UserChat> users = userChatRepository.findAll();
-
-                //приветствие
-                if (text.equals(Commands.START.getCommandText())) {
-                    telegramBotService.sendMessage(chatId,
-                            userName + " , приветствую вас!\n" +
-                                    "Я - учебный бот, симулирующий работу приюта для животных. \n" +
-                                    "Для дальнейшей работы напишите, какого типа приют вас интересует: \n" +
-                                    "'/dog' - для собак, '/cat' - для кошек");
-                    UserChat user = new UserChat(chatId, userName, userSurname);
-                    if(!users.contains(user)){
-                        user.setBotState(BotState.START.toString());
-                        user.setCurrentChosenShelter(null);
-                        user.setHasChosenShelter(false);
-                        userChatRepository.save(user);
+                UserChat defaultUser = new UserChat(chatId, userName, userSurname, null, false, START.toString());
+                UserChat user = new UserChat(chatId, userName, userSurname, null, false, START.toString());
+                if (text.equals(START.toString())){
+                    user.setBotState(defaultUser.getBotState());
+                    user.setHasChosenShelter(defaultUser.isHasChosenShelter());
+                    user.setCurrentChosenShelter(defaultUser.getCurrentChosenShelter());
+                    BotState currentState = BotState.valueOf(user.getBotState());
+                    userChatRepository.save(user);
+                    handlers.startCommand(chatId,user);
+                    switch (currentState) {
+                        case START:
+                            start.acceptStartCommands(user, chatId);
+                            break;
+                        case CHOOSE_SHELTER:
+                            choseShelter.acceptChoseShelterComand(user, text, chatId);
+                            break;
+                        case MENU:
+                            menu.acceptInfoCommands(user, text, chatId);
+                            break;
+                        case INFO:
+                            info.acceptInfoCommands(user, text, chatId);
+                            break;
+                        case ADOPTION:
+                            adoption.adoptionMenu(user, text, chatId);
+                            break;
+                        case REPORT:
+                            PetReport petReport = new PetReport(user, dateTime, message.photo(), text);
+                            petReportService.savePetReport(petReport);
+                            break;
+                        case HELP:
+                            Help help = new Help(user, text);
+                            helpService.saveHelpAppeal(help);
+                            break;
+                        default:
+                            telegramBotService.sendMessage(
+                                    chatId,
+                                    user.getName() + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
+                            LOGGER.warn("Unrecognized message in " + chatId + " chat.");
                     }
                 }
-                else {
-                    telegramBotService.sendMessage(
-                            chatId,
-                            userName + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
-                    logger.warn("Unrecognized message in " + chatId + " chat.");
-                }
-            } else {
-                telegramBotService.sendMessage(chatId,
-                        "Отправьте команду /start или выберите тип приюта");
+
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL; // return id of last processed update or confirm them all
     }
 }
-

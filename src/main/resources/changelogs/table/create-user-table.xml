@@ -13,7 +13,7 @@
         </preConditions>
 
         <createTable tableName="user">
-            <column name="id" autoIncrement="true" type="BIGINT">
+            <column name="user_id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" unique="true"/>
             </column>
             <column name="name" type="VARCHAR(20)">

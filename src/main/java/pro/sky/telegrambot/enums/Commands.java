@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.enums;
 
+import org.springframework.stereotype.Component;
+
 public enum Commands {
     START("/start"),
     CAT("/cat"),
@@ -20,7 +22,7 @@ public enum Commands {
     ABOUT("/about"),
     WORKING_HOURS("/workingHours"),
     SECURITY_NUMBER("/securityNumber"),
-    SAFETY_PRECAOTIONS("/safetyPrecautions"),
+    SAFETY_PRECAUTIONS("/safetyPrecautions"),
     HELP("/help");
 
 

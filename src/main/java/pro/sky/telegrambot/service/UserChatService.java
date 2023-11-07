@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.exception.UserNotFoundException;
 import pro.sky.telegrambot.repository.UserChatRepository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * service for processing commands
@@ -43,6 +46,10 @@ public class UserChatService {
             user.setSurname("Иванов");
         }
         return userChatRepository.save(user);
+    }
+
+    public BotState getUserChatStatus(long id) {
+        return Optional.ofNullable(userChatRepository.findStatusUserChatByUserId(id)).orElseThrow(UserNotFoundException::new);
     }
 
     /**
