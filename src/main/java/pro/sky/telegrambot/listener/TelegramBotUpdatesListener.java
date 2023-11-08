@@ -91,7 +91,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             Long chatId = message.chat().id();
             LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
-                List<UserChat> userList = userChatRepository.findAll();
                 String text = message.text();
                 UserChat defaultUser = new UserChat(chatId, userName, userSurname, null, false, START.toString());
                 UserChat user = new UserChat(chatId, userName, userSurname, null, false, START.toString());
