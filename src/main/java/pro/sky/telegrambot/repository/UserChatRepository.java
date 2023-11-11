@@ -11,6 +11,8 @@ import pro.sky.telegrambot.enums.BotState;
  */
 public interface UserChatRepository extends JpaRepository<UserChat, Long> {
     public  UserChat findUserByNameAndSurname(String name, String surname);
+    @Query(value = "SELECT * FROM user WHERE chat_id = :chatId", nativeQuery = true)
+    UserChat findUserByChatId(@Param("chatId") Long chatId);
 
     BotState findStatusUserChatByUserId(@Param("userId") long userId);
 

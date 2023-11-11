@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import liquibase.pro.packaged.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import pro.sky.telegrambot.entity.Help;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
 import pro.sky.telegrambot.service.HelpService;
@@ -91,11 +93,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             Long chatId = message.chat().id();
             LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
-                List<UserChat> userList = userChatRepository.findAll();
+//                List<UserChat> userList = userChatRepository.findAll();
                 String text = message.text();
-                UserChat defaultUser = new UserChat(chatId, userName, userSurname, null, false, START.toString());
-                UserChat user = new UserChat(chatId, userName, userSurname, null, false, START.toString());
-                if (text.equals(START.toString())){
+                UserChat defaultUser = new UserChat(chatId, userName, userSurname, null, false, Commands.START.getCommandText());
+                UserChat user = new UserChat(chatId, userName, userSurname, null, false, Commands.START.getCommandText());
+                if (text.equals(Commands.START.getCommandText())){
                     user.setBotState(defaultUser.getBotState());
                     user.setHasChosenShelter(defaultUser.isHasChosenShelter());
                     user.setCurrentChosenShelter(defaultUser.getCurrentChosenShelter());

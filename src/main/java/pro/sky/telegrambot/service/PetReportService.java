@@ -2,11 +2,9 @@ package pro.sky.telegrambot.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.PetReportRepository;
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -64,12 +62,12 @@ public class PetReportService {
         }
         if (!lastReport.getDateTime().equals(petReport.getDateTime())) {
             if (petReport.getPhoto().equals(Optional.empty())) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте фото к вашему отчету и отправьте их вместе!");
+                telegramBotService.sendMessage(petReport.getUser().getChatId(), "Добавьте фото к вашему отчету и отправьте их вместе!");
             } else if (petReport.getText().isEmpty()) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте текст к вашему отчету и отправьте их вместе!");
+                telegramBotService.sendMessage(petReport.getUser().getChatId(), "Добавьте текст к вашему отчету и отправьте их вместе!");
             } else {
                 petReportRepository.save(petReport);
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Спасибо за ваш отчет!");
+                telegramBotService.sendMessage(petReport.getUser().getChatId(), "Спасибо за ваш отчет!");
             }
         }
 //        if (lastReport.getDateTime().equals(newReport.getDateTime()) && !lastReport.getText().isEmpty() && !lastReport.getPhoto().isEmpty()) {

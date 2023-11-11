@@ -17,15 +17,14 @@ public class HandlerText {
                 "'/dog' - для собак, '/cat' - для кошек";
     }
 
-
     public String handleShelterConsultationText(String animalType){
-        String shelterType = null;
-        if (animalType.equals(ShelterType.CAT_SHELTER)){
+        String shelterType;
+        if (animalType.equals(ShelterType.CAT_SHELTER.toString())){
             shelterType="кошек";
         } else {
             shelterType="собак";
         }
-        return "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
+        return "Выберите, какая информация по приюту для " + shelterType + " вас интересует:\n" +
                 "'/information' - Узнать информацию о приюте \n" +
                 "'/howToTakePet' - Как взять животное из приюта\n" +
                 "'/report' - Прислать отчет о питомце\n" +
@@ -42,7 +41,7 @@ public class HandlerText {
     }
 
     public String aboutShelterText(String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
             return  "Приют для кошек работает с 1999 года и имеет уже 3 кошки";
         } else {
             return  "Приют для собак не работал никогда";
@@ -76,7 +75,7 @@ public class HandlerText {
     }
 
     public String writeDataText(){
-        return "Напишите пожалуйста ваш номер, и с вами в ближайшее время позвонит наш оператор";
+        return "Напишите, пожалуйста, ваш номер и с вами в ближайшее время свяжется наш оператор";
     }
 
     public String howToTakePetText(String shelterType){

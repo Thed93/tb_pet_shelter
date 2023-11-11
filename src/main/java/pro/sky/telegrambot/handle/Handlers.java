@@ -40,8 +40,9 @@ public class Handlers {
     public void startCommand(Long chatId, UserChat user){
         telegramBotService.sendMessage(chatId, handlerText.startingText(user.getName()));
     }
+
     public void handleShelterConsultation(Long chatId, String type) {
-        String animalType = null;
+        String animalType;
         if (type.equals("/dog")) {
             animalType = "собак";
         } else {
@@ -49,6 +50,7 @@ public class Handlers {
         }
         telegramBotService.sendMessage(chatId, handlerText.handleShelterConsultationText(animalType));
     }
+
     public void handleAdoptionConsultation(Long chatId, String currentChosenShelter) {
         telegramBotService.sendMessage(chatId, handlerText.handleAdoptionConsultationText());
     }

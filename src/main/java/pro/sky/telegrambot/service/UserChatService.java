@@ -32,21 +32,21 @@ public class UserChatService {
         this.userChatRepository = userChatRepository;
     }
 
-    /**
-     *
-     * save user in database
-     * <br>
-     * use repository method {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
-     *
-     * @param user
-     * @return saving user
-     */
-    public UserChat saveUser(UserChat user){
-        if (user.getSurname() == null){
-            user.setSurname("Иванов");
-        }
-        return userChatRepository.save(user);
-    }
+//    /**
+//     *
+//     * save user in database
+//     * <br>
+//     * use repository method {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+//     *
+//     * @param user
+//     * @return saving user
+//     */
+//    public UserChat saveUser(UserChat user){
+//        if (user.getSurname() == null){
+//            user.setSurname("Иванов");
+//        }
+//        return userChatRepository.save(user);
+//    }
 
     public BotState getUserChatStatus(long id) {
         return Optional.ofNullable(userChatRepository.findStatusUserChatByUserId(id)).orElseThrow(UserNotFoundException::new);

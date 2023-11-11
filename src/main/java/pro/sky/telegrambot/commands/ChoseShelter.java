@@ -55,7 +55,7 @@ public class ChoseShelter {
      * @param chatId
      */
 
-    private final void shelterType(UserChat user, String text, long chatId) {
+    private void shelterType(UserChat user, String text, long chatId) {
         if (text.equals(Commands.DOG.toString())) {
             user.setBotState(BotState.MENU.toString());
             user.setCurrentChosenShelter(ShelterType.DOG_SHELTER.toString());
