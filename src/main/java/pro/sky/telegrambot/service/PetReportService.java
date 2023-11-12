@@ -56,7 +56,7 @@ public class PetReportService {
     @Transactional
     public void savePetReport(PetReport petReport) {
         List<PetReport> ownerReports = petReportRepository.findReportsByUserNameAndUserSurname(petReport.getUser().getName(), petReport.getUser().getSurname());
-        PetReport lastReport = null;
+        PetReport lastReport = ownerReports.get(0);
         for (int i = 0; i < ownerReports.size(); i++) {
             if (lastReport.getReportNumber() < ownerReports.get(i).getReportNumber()) {
                 lastReport = ownerReports.get(i);

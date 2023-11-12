@@ -1,16 +1,14 @@
-package pro.sky.telegrambot.commands;;
+package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
-import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
 
+
 /**
- *
  * class for processing user's message
- *
  */
 @Component
 public class Info {
@@ -26,7 +24,7 @@ public class Info {
      */
     private final Handlers handlers;
 
-    public Info(TelegramBotService telegramBotService,Handlers handlers) {
+    public Info(TelegramBotService telegramBotService, Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
     }
@@ -35,12 +33,16 @@ public class Info {
      * redirection user depending on his message
      *
      * @param user
-     * @param text user's message
+     * @param text   user's message
      * @param chatId
      */
-    public void acceptInfoCommands(UserChat user, String text, Long chatId){
-        Commands currentCommand = Commands.valueOf(text);
-        switch (currentCommand){
+    public void acceptInfoCommands(UserChat user, String text, Long chatId) {
+
+        // Пока что пускай так, небыло времени что-то лучше придумать и здесь нет команды /writeData
+        // хотя бот предлагает эту команду
+
+        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        switch (currentCommand) {
             case ABOUT:
                 getShelterInfo(chatId, user);
                 break;
@@ -56,7 +58,18 @@ public class Info {
             case HELP:
                 help(chatId);
                 break;
+            default:
+                break;
         }
+    }
+
+    private final String toConstantStyle(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
+                return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
+            }
+        }
+        return string.toUpperCase();
     }
 
 
@@ -68,7 +81,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void getShelterInfo (Long chatId, UserChat user){
+    private final void getShelterInfo(Long chatId, UserChat user) {
         handlers.aboutShelter(chatId, user.getCurrentChosenShelter());
     }
 
@@ -80,7 +93,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void workingHours(Long chatId, UserChat user){
+    private final void workingHours(Long chatId, UserChat user) {
         handlers.workingHours(chatId, user.getCurrentChosenShelter());
     }
 
@@ -92,7 +105,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void securityNumber (Long chatId, UserChat user){
+    private final void securityNumber(Long chatId, UserChat user) {
         handlers.securityNumber(chatId, user.getCurrentChosenShelter());
     }
 
@@ -104,7 +117,7 @@ public class Info {
      * @param chatId
      * @param user
      */
-    private final void safetyPrecautions (Long chatId, UserChat user){
+    private final void safetyPrecautions(Long chatId, UserChat user) {
         handlers.safetyPrecautions(chatId, user.getCurrentChosenShelter());
     }
 
@@ -115,7 +128,7 @@ public class Info {
      *
      * @param chatId
      */
-    private final void help(Long chatId){
+    private final void help(Long chatId) {
         handlers.writeData(chatId);
     }
 }

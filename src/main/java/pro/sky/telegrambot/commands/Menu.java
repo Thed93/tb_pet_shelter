@@ -6,6 +6,7 @@ import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
 
 /**
  * class for processing user's message
@@ -17,14 +18,16 @@ public class Menu {
      * copy of Telegram - bot for sending message
      */
     private final TelegramBotService telegramBotService;
+    private final UserChatService userChatService;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Menu(TelegramBotService telegramBotService, Handlers handlers) {
+    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, Handlers handlers) {
         this.telegramBotService = telegramBotService;
+        this.userChatService = userChatService;
         this.handlers = handlers;
     }
 
@@ -38,20 +41,24 @@ public class Menu {
      */
     public void acceptInfoCommands(UserChat user, String text, Long chatId) {
         user.setBotState(BotState.INFO.toString());
-        if (text.equals(Commands.INFORMATION.toString())) {
+        if (text.equals(Commands.INFORMATION.getCommandText())) {
             user.setBotState(BotState.INFO.toString());
+            userChatService.saveUser(user);
             infoMenu(chatId, user);
         }
-        if (text.equals(Commands.ADOPTION.toString())) {
+        if (text.equals(Commands.ADOPTION.getCommandText())) {
             user.setBotState(BotState.ADOPTION.toString());
+            userChatService.saveUser(user);
             adoptionMenu(chatId, user);
         }
-        if (text.equals(Commands.REPORT.toString())) {
+        if (text.equals(Commands.REPORT.getCommandText())) {
             user.setBotState(BotState.REPORT.toString());
-            reportMenu(user, text.toString(), chatId);
+            userChatService.saveUser(user);
+            reportMenu(user, text, chatId);
         }
-        if (text.equals(Commands.VOLUNTEER.toString())) {
+        if (text.equals(Commands.VOLUNTEER.getCommandText())) {
             user.setBotState(BotState.VOLUNTEER.toString());
+            userChatService.saveUser(user);
             volunteer(user, chatId);
         }
     }

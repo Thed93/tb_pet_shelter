@@ -42,9 +42,9 @@ public class UserChatService {
      * @return saving user
      */
     public UserChat saveUser(UserChat user){
-        if (user.getSurname() == null){
+        /*if (user.getSurname() == null){
             user.setSurname("Иванов");
-        }
+        }*/
         return userChatRepository.save(user);
     }
 
@@ -63,4 +63,7 @@ public class UserChatService {
         return userChatRepository.findAll();
     }
 
+    public UserChat getUser(Long chatId) {
+        return userChatRepository.findUserChatByUserId(chatId).orElse(saveUser(new UserChat(chatId, "Иван", "Иванов", null, false, BotState.START.toString())));
+    }
 }

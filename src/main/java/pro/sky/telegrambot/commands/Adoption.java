@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
@@ -23,9 +25,10 @@ public class Adoption {
     /**
      * class for getting methods
      */
+    private static final Logger LOG = LoggerFactory.getLogger(Adoption.class);
     private final Handlers handlers;
 
-    Commands commands;
+    private Commands commands;
 
     /**
      * class for processing user's commands
@@ -44,7 +47,12 @@ public class Adoption {
      * @param chatId
      */
     public void adoptionMenu(UserChat user, String text, long chatId) throws UnsatisfiedDependencyException {
-        Commands currentCommand = Commands.valueOf(text);
+
+        // Пока что точно такая же история в Info, потом испраится, сейчас пока нет времени на это
+
+        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        LOG.info(currentCommand.toString());
+
         switch (currentCommand){
             case CAT:
                 welcomeRules(chatId, user);
@@ -77,6 +85,15 @@ public class Adoption {
                 volunteer(user, chatId);
                 break;
         }
+    }
+
+    private final String toConstantStyle(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
+                return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
+            }
+        }
+        return string.toUpperCase();
     }
 
     /**

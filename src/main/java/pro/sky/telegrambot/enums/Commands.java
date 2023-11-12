@@ -7,7 +7,7 @@ public enum Commands {
     CAT("/cat"),
     DOG("/dog"),
     INFORMATION("/information"),
-    ADOPTION("/adoption"),
+    ADOPTION("/howToTakePet"),
     REPORT("/report"),
     WELCOME_RULES("/welcomeRules"),
     DOCS("/docs"),
