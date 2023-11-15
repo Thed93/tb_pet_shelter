@@ -90,45 +90,32 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
                 String text = message.text();
-                //UserChat defaultUser = new UserChat(chatId, userName, userSurname, null, false, START.toString());
-                //UserChat user = new UserChat(chatId, userName, userSurname, null, false, START.toString());
-                UserChat user = userChatService.getUser(chatId);
-                //if (text.equals(START.toString())){
-                    /*user.setBotState(defaultUser.getBotState());
-                    user.setHasChosenShelter(defaultUser.isHasChosenShelter());
-                    user.setCurrentChosenShelter(defaultUser.getCurrentChosenShelter());*/
-                BotState currentState = BotState.valueOf(user.getBotState());
-                //userChatRepository.save(user);
-                //handlers.startCommand(chatId, user);
+                userChatService.editUserChat(chatId, userName, userSurname);
+                BotState currentState = userChatService.getUserChatStatus(chatId);
                 switch (currentState) {
                     case START:
-                        start.acceptStartCommands(user, chatId);
-                        //LOGGER.info(BotState.START.toString());
+                        start.acceptStartCommands(chatId);
                         break;
                     case CHOOSE_SHELTER:
-                        choseShelter.acceptChoseShelterCommand(user, text, chatId);
+                        choseShelter.acceptChoseShelterCommand(text, chatId);
                         break;
                     case MENU:
-                        menu.acceptInfoCommands(user, text, chatId);
+                        menu.acceptInfoCommands(text, chatId);
                         break;
                     case INFO:
-                        info.acceptInfoCommands(user, text, chatId);
+                        info.acceptInfoCommands(text, chatId);
                         break;
                     case ADOPTION:
-                        adoption.adoptionMenu(user, text, chatId);
+                        adoption.adoptionMenu(text, chatId);
                         break;
                     case REPORT:
-                        PetReport petReport = new PetReport(user, dateTime, message.photo(), text);
-                        petReportService.savePetReport(petReport);
                         break;
                     case HELP:
-                        Help help = new Help(user, text);
-                        helpService.saveHelpAppeal(help);
                         break;
                     default:
                         telegramBotService.sendMessage(
                                 chatId,
-                                user.getName() + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
+                                userChatService.getName(chatId) + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
                         LOGGER.warn("Unrecognized message in " + chatId + " chat.");
                 }
                 //}

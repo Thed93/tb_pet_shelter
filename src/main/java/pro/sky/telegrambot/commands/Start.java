@@ -36,28 +36,22 @@ public class Start {
 
     /**
      * examination that user send correct message
-     *
-     * @param user
+
      * @param chatId
      */
-    public void acceptStartCommands(UserChat user, long chatId) {
-            starting(user, chatId);
+    public void acceptStartCommands(long chatId) {
+            starting(chatId);
     }
 
     /**
      * method, if user send {@code "/start" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#startCommand(Long, UserChat)}
+     * use method
      *
-     * @param user
      * @param chatId
      */
-    private final void starting(UserChat user, long chatId) {
-        user.setBotState(BotState.CHOOSE_SHELTER.toString());
-        user.setHasChosenShelter(false);
-        user.setCurrentChosenShelter(null);
-        userChatService.saveUser(user);
-        //LOG.info(user.getBotState());
-        handlers.startCommand(chatId, user);
+    private final void starting(long chatId) {
+        userChatService.setChoseShelter(chatId);
+        handlers.startCommand(chatId);
     }
 }

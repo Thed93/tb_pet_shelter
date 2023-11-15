@@ -59,6 +59,12 @@ public class UserChat {
         this.botState = botState;
     }
 
+    public UserChat(Long userId, String name, String surname) {
+        this.userId = userId;
+        this.name = name;
+        this.surname = surname;
+    }
+
     public Long getUserId() {
         return userId;
     }

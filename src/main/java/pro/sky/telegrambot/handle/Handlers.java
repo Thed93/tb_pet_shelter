@@ -6,6 +6,7 @@ import pro.sky.telegrambot.entity.AppealToVolunteer;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.service.AppealToVolunteerService;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
 
 /**
  * service of methods, which will be chosen depending on user's message
@@ -24,21 +25,24 @@ public class Handlers {
      */
     private final HandlerText handlerText;
 
+    private final UserChatService userChatService;
+
     /**
      * service for saving appeal to volunteer
      */
     private final AppealToVolunteerService appealToVolunteerService;
 
 
-    public Handlers(TelegramBotService telegramBotService, HandlerText handlerText, AppealToVolunteerService appealToVolunteerService) {
+    public Handlers(TelegramBotService telegramBotService, HandlerText handlerText, UserChatService userChatService, AppealToVolunteerService appealToVolunteerService) {
         this.telegramBotService = telegramBotService;
         this.handlerText = handlerText;
+        this.userChatService = userChatService;
         this.appealToVolunteerService = appealToVolunteerService;
     }
 
 
-    public void startCommand(Long chatId, UserChat user){
-        telegramBotService.sendMessage(chatId, handlerText.startingText(user.getName()));
+    public void startCommand(Long chatId){
+        telegramBotService.sendMessage(chatId, handlerText.startingText(userChatService.getName(chatId)));
     }
     public void handleShelterConsultation(Long chatId, String type) {
         String animalType = null;
@@ -113,13 +117,11 @@ public class Handlers {
 
     }
 
-    public void volunteer(UserChat user, long chatId) {
+    public void volunteer(long chatId) {
         telegramBotService.sendMessage(chatId, handlerText.volunteerText());
-        AppealToVolunteer appealToVolunteer = new AppealToVolunteer(user);
-        appealToVolunteerService.saveAppeal(appealToVolunteer);
     }
 
-    public void reportMenu(UserChat user, String text, long chatId){
+    public void reportMenu(String text, long chatId){
         telegramBotService.sendMessage(chatId, handlerText.reportText());
     }
 }

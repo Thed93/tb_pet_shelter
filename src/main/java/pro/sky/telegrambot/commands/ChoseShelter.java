@@ -36,13 +36,14 @@ public class ChoseShelter {
     /**
      * examination that user send correct message
      *
-     * @param user
      * @param text
      * @param chatId
      */
-    public void acceptChoseShelterCommand(UserChat user, String text, long chatId){
-        if(text.equals("/dog") || text.equals("/cat") && user.getBotState().equals(BotState.CHOOSE_SHELTER.toString())){
-            shelterType(user, text, chatId);
+    public void acceptChoseShelterCommand(String text, long chatId){
+        if(text.equals("/dog") || text.equals("/cat")){
+            if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER.toString())){
+                shelterType(text, chatId);
+            }
         }
     }
 
@@ -53,23 +54,18 @@ public class ChoseShelter {
      * <br>
      * {@link pro.sky.telegrambot.handle.Handlers#handleShelterConsultation(Long, String)}
      *
-     * @param user
      * @param text
      * @param chatId
      */
 
-    private final void shelterType(UserChat user, String text, long chatId) {
+    private final void shelterType(String text, long chatId) {
         if (text.equals(Commands.DOG.getCommandText())) {
-            user.setBotState(BotState.MENU.toString());
-            user.setCurrentChosenShelter(ShelterType.DOG_SHELTER.toString());
-            user.setHasChosenShelter(true);
-            userChatService.saveUser(user);
+            userChatService.setMenu(chatId);
+            userChatService.setDog(chatId);
             handlers.handleShelterConsultation(chatId, text);
         } else if (text.equals(Commands.CAT.getCommandText())) {
-            user.setBotState(BotState.MENU.toString());
-            user.setCurrentChosenShelter(ShelterType.CAT_SHELTER.toString());
-            user.setHasChosenShelter(true);
-            userChatService.saveUser(user);
+            userChatService.setMenu(chatId);
+            userChatService.setCat(chatId);
             handlers.handleShelterConsultation(chatId, text);
         }
     }

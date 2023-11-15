@@ -35,31 +35,25 @@ public class Menu {
      *
      * redirection and send parameters for user depending on his message
      *
-     * @param user
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(UserChat user, String text, Long chatId) {
-        user.setBotState(BotState.INFO.toString());
+    public void acceptInfoCommands(String text, Long chatId) {
         if (text.equals(Commands.INFORMATION.getCommandText())) {
-            user.setBotState(BotState.INFO.toString());
-            userChatService.saveUser(user);
-            infoMenu(chatId, user);
+            userChatService.setInfo(chatId);
+            infoMenu(chatId);
         }
         if (text.equals(Commands.ADOPTION.getCommandText())) {
-            user.setBotState(BotState.ADOPTION.toString());
-            userChatService.saveUser(user);
-            adoptionMenu(chatId, user);
+            userChatService.setAdoption(chatId);
+            adoptionMenu(chatId);
         }
         if (text.equals(Commands.REPORT.getCommandText())) {
-            user.setBotState(BotState.REPORT.toString());
-            userChatService.saveUser(user);
-            reportMenu(user, text, chatId);
+            userChatService.setReport(chatId);
+            reportMenu(text, chatId);
         }
         if (text.equals(Commands.VOLUNTEER.getCommandText())) {
-            user.setBotState(BotState.VOLUNTEER.toString());
-            userChatService.saveUser(user);
-            volunteer(user, chatId);
+            userChatService.setVolunteer(chatId);
+            volunteer(chatId);
         }
     }
 
@@ -70,10 +64,9 @@ public class Menu {
      * use method {@link pro.sky.telegrambot.handle.Handlers#handleAdoptionConsultation(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void infoMenu (Long chatId, UserChat user){
-        handlers.handleAdoptionConsultation(chatId, user.getCurrentChosenShelter());
+    private final void infoMenu (Long chatId){
+        handlers.handleAdoptionConsultation(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -82,23 +75,21 @@ public class Menu {
      * use method {@link pro.sky.telegrambot.handle.Handlers#howToTakePet(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void adoptionMenu (Long chatId, UserChat user){
-        handlers.howToTakePet(chatId, user.getCurrentChosenShelter());
+    private final void adoptionMenu (Long chatId){
+        handlers.howToTakePet(chatId, userChatService.getShelter(chatId));
     }
 
     /**
      * method, if user send {@code "/report" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#reportMenu(UserChat, String, long)}
+     * use method
      *
-     * @param user
      * @param text
      * @param chatId
      */
-    private void reportMenu(UserChat user, String text, long chatId){
-        handlers.reportMenu(user, text, chatId);
+    private void reportMenu(String text, long chatId){
+        handlers.reportMenu(text, chatId);
     }
 
     /**
@@ -106,10 +97,9 @@ public class Menu {
      * <br>
      * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
      *
-     * @param user
      * @param chatId
      */
-    private void volunteer(UserChat user, long chatId){
-        handlers.volunteer(user, chatId);
+    private void volunteer(long chatId){
+        handlers.volunteer(chatId);
     }
 }

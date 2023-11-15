@@ -7,6 +7,8 @@ import pro.sky.telegrambot.enums.ShelterType;
 /**
  * class of texts to {@link pro.sky.telegrambot.handle.Handlers}
  */
+
+
 @Component
 public class HandlerText {
 

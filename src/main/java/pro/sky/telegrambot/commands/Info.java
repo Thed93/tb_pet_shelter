@@ -5,6 +5,7 @@ import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
 
 
 /**
@@ -24,19 +25,21 @@ public class Info {
      */
     private final Handlers handlers;
 
-    public Info(TelegramBotService telegramBotService, Handlers handlers) {
+    private final UserChatService userChatService;
+
+    public Info(TelegramBotService telegramBotService, Handlers handlers, UserChatService userChatService) {
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
+        this.userChatService = userChatService;
     }
 
     /**
      * redirection user depending on his message
      *
-     * @param user
      * @param text   user's message
      * @param chatId
      */
-    public void acceptInfoCommands(UserChat user, String text, Long chatId) {
+    public void acceptInfoCommands(String text, Long chatId) {
 
         // Пока что пускай так, небыло времени что-то лучше придумать и здесь нет команды /writeData
         // хотя бот предлагает эту команду
@@ -44,16 +47,16 @@ public class Info {
         Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
         switch (currentCommand) {
             case ABOUT:
-                getShelterInfo(chatId, user);
+                getShelterInfo(chatId);
                 break;
             case WORKING_HOURS:
-                workingHours(chatId, user);
+                workingHours(chatId);
                 break;
             case SECURITY_NUMBER:
-                securityNumber(chatId, user);
+                securityNumber(chatId);
                 break;
             case SAFETY_PRECAUTIONS:
-                safetyPrecautions(chatId, user);
+                safetyPrecautions(chatId);
                 break;
             case HELP:
                 help(chatId);
@@ -79,10 +82,9 @@ public class Info {
      * use method {@link pro.sky.telegrambot.handle.Handlers#aboutShelter(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void getShelterInfo(Long chatId, UserChat user) {
-        handlers.aboutShelter(chatId, user.getCurrentChosenShelter());
+    private final void getShelterInfo(Long chatId) {
+        handlers.aboutShelter(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -91,10 +93,9 @@ public class Info {
      * use method {@link pro.sky.telegrambot.handle.Handlers#workingHours(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void workingHours(Long chatId, UserChat user) {
-        handlers.workingHours(chatId, user.getCurrentChosenShelter());
+    private final void workingHours(Long chatId) {
+        handlers.workingHours(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -103,10 +104,9 @@ public class Info {
      * use method {@link pro.sky.telegrambot.handle.Handlers#securityNumber(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void securityNumber(Long chatId, UserChat user) {
-        handlers.securityNumber(chatId, user.getCurrentChosenShelter());
+    private final void securityNumber(Long chatId) {
+        handlers.securityNumber(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -115,10 +115,9 @@ public class Info {
      * use method {@link pro.sky.telegrambot.handle.Handlers#safetyPrecautions(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void safetyPrecautions(Long chatId, UserChat user) {
-        handlers.safetyPrecautions(chatId, user.getCurrentChosenShelter());
+    private final void safetyPrecautions(Long chatId) {
+        handlers.safetyPrecautions(chatId, userChatService.getShelter(chatId));
     }
 
     /**
