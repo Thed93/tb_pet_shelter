@@ -2,13 +2,16 @@ package pro.sky.telegrambot.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.PetReportRepository;
+import pro.sky.telegrambot.repository.UserChatRepository;
+
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,7 @@ public class PetReportService {
     /**
      * repository for data access
      */
+    private final UserChatRepository userChatRepository;
     private final PetReportRepository petReportRepository;
 
     /**
@@ -36,9 +40,17 @@ public class PetReportService {
     private final TelegramBotService telegramBotService;
 
 
-    public PetReportService(PetReportRepository petReportRepository, TelegramBotService telegramBotService) {
+    public PetReportService(UserChatRepository userChatRepository, PetReportRepository petReportRepository, TelegramBotService telegramBotService) {
+        this.userChatRepository = userChatRepository;
         this.petReportRepository = petReportRepository;
         this.telegramBotService = telegramBotService;
+    }
+
+    public void createPetReport(Long chatId) {
+        LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        UserChat user = userChatRepository.findUserChatByUserId(chatId).get();
+        PetReport petReport = new PetReport(user, dateTime, null, null, null, null);
+        petReportRepository.save(petReport);
     }
 
     /**
@@ -53,6 +65,11 @@ public class PetReportService {
      *
      * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
      */
+
+    public void savePhoto() {
+
+    }
+
     @Transactional
     public void savePetReport(PetReport petReport) {
         List<PetReport> ownerReports = petReportRepository.findReportsByUserNameAndUserSurname(petReport.getUser().getName(), petReport.getUser().getSurname());
@@ -64,9 +81,13 @@ public class PetReportService {
         }
         if (!lastReport.getDateTime().equals(petReport.getDateTime())) {
             if (petReport.getPhoto().equals(Optional.empty())) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте фото к вашему отчету и отправьте их вместе!");
-            } else if (petReport.getText().isEmpty()) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте текст к вашему отчету и отправьте их вместе!");
+                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Отправьте, пожалуйста, фото питомца");
+            } else if (petReport.getDiet().isEmpty()) {
+                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите рацион животного");
+            } else if (petReport.getWellBeing().isEmpty()) {
+                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите общее самочувствие и привыкание к новому месту");
+            } else if (petReport.getChangeInBehavior().isEmpty()) {
+                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите изменение в поведении: отказ от старых привычек, приобретение новых");
             } else {
                 petReportRepository.save(petReport);
                 telegramBotService.sendMessage(petReport.getUser().getUserId(), "Спасибо за ваш отчет!");

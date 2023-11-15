@@ -175,7 +175,7 @@ public class HandlerText {
         return "Вам скоро наберет один из наших волонтеров, всего хорошего!";
     }
 
-    public String reportText(){ return "Для отчета о вашем животном отправьте пожалуйста фото и текст.";}
+    public String requestPhoto(){ return "Для отчета отправьте, пожалуйста, фото животного.";}
 
 
 

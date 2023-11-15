@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
-import pro.sky.telegrambot.entity.Help;
-import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
@@ -87,7 +84,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String userName = message.chat().firstName();
             String userSurname = message.chat().lastName();
             Long chatId = message.chat().id();
-            LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        //    LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
@@ -120,8 +117,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                 userChatService.getName(chatId) + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
                         LOGGER.warn("Unrecognized message in " + chatId + " chat.");
                 }
-                //}
 
+            } else if(update.message() != null && update.message().photo() != null) {
+                BotState currentState = userChatService.getUserChatStatus(chatId);
+                if (currentState.equals(BotState.REPORT)) {
+                    petReportService.savePhoto();
+                }
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL; // return id of last processed update or confirm them all

@@ -122,6 +122,7 @@ public class Handlers {
     }
 
     public void reportMenu(String text, long chatId){
-        telegramBotService.sendMessage(chatId, handlerText.reportText());
+        telegramBotService.sendMessage(chatId, handlerText.requestPhoto());
+
     }
 }
