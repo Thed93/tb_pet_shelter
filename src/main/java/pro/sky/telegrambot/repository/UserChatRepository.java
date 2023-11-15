@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserChatRepository extends JpaRepository<UserChat, Long> {
     public  UserChat findUserByNameAndSurname(String name, String surname);
 
-    BotState findBotStateUserChatByUserId(@Param("userId") long userId);
+//    BotState findBotStateByUserId(@Param("userId") long userId);
 
     Optional<UserChat> findUserChatByUserId(Long id);
 

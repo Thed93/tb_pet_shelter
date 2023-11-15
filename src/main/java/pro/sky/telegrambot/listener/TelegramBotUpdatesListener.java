@@ -92,11 +92,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
                 BotState currentState = userChatService.getUserChatStatus(chatId);
+                LOGGER.info(currentState.toString());
                 switch (currentState) {
                     case START:
                         start.acceptStartCommands(chatId);
                         break;
                     case CHOOSE_SHELTER:
+                        LOGGER.info("invoke");
                         choseShelter.acceptChoseShelterCommand(text, chatId);
                         break;
                     case MENU:

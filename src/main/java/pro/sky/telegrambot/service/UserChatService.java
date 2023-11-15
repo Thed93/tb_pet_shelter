@@ -35,7 +35,8 @@ public class UserChatService {
     }
 
     public BotState getUserChatStatus(long id) {
-        return Optional.ofNullable(userChatRepository.findBotStateUserChatByUserId(id)).orElseThrow(UserNotFoundException::new);
+        LOGGER.info(userChatRepository.findUserChatByUserId(id).get().getBotState());
+        return BotState.valueOf(userChatRepository.findUserChatByUserId(id).get().getBotState());
     }
 
     /**

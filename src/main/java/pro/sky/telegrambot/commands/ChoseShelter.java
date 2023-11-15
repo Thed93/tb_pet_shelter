@@ -41,7 +41,7 @@ public class ChoseShelter {
      */
     public void acceptChoseShelterCommand(String text, long chatId){
         if(text.equals("/dog") || text.equals("/cat")){
-            if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER.toString())){
+            if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER)){
                 shelterType(text, chatId);
             }
         }
@@ -58,7 +58,7 @@ public class ChoseShelter {
      * @param chatId
      */
 
-    private final void shelterType(String text, long chatId) {
+    private void shelterType(String text, long chatId) {
         if (text.equals(Commands.DOG.getCommandText())) {
             userChatService.setMenu(chatId);
             userChatService.setDog(chatId);
