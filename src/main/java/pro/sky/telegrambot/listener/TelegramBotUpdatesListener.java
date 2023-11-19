@@ -3,15 +3,13 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
-import pro.sky.telegrambot.entity.Help;
-import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
@@ -21,8 +19,6 @@ import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -87,7 +83,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String userName = message.chat().firstName();
             String userSurname = message.chat().lastName();
             Long chatId = message.chat().id();
-            LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        //    LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && message.text() != null) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
@@ -110,9 +106,18 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     case ADOPTION:
                         adoption.adoptionMenu(text, chatId);
                         break;
-                    case REPORT:
-                        break;
+//                    case REPORT:
+//                        break;
                     case HELP:
+                        break;
+                    case WAITING_FOR_DIET:
+                        petReportService.saveDiet(text, chatId);
+                        break;
+                    case WAITING_FOR_WELL_BEING:
+                        petReportService.saveWellBeing(text, chatId);
+                        break;
+                    case WAITING_FOR_CHANGE_IN_BEHAVIOR:
+                        petReportService.saveChangeInBehavior(text, chatId);
                         break;
                     default:
                         telegramBotService.sendMessage(
@@ -120,8 +125,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                 userChatService.getName(chatId) + ", пока не знаю ответа! Чтобы вернуться к началу, отправьте /start");
                         LOGGER.warn("Unrecognized message in " + chatId + " chat.");
                 }
-                //}
 
+            } else if(update.message() != null && update.message().photo() != null) {
+                BotState currentState = userChatService.getUserChatStatus(chatId);
+                if (currentState.equals(BotState.REPORT)) {
+                    PhotoSize[] photoSizes = update.message().photo();
+                        petReportService.savePhoto(chatId, photoSizes);
+                    }
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL; // return id of last processed update or confirm them all

@@ -2,9 +2,9 @@ package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
-import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
+import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
 
@@ -19,15 +19,17 @@ public class Menu {
      */
     private final TelegramBotService telegramBotService;
     private final UserChatService userChatService;
+    private final PetReportService petReportService;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, Handlers handlers) {
+    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, PetReportService petReportService, Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.userChatService = userChatService;
+        this.petReportService = petReportService;
         this.handlers = handlers;
     }
 
@@ -50,6 +52,7 @@ public class Menu {
         if (text.equals(Commands.REPORT.getCommandText())) {
             userChatService.setReport(chatId);
             reportMenu(text, chatId);
+            petReportService.createPetReport(chatId);
         }
         if (text.equals(Commands.VOLUNTEER.getCommandText())) {
             userChatService.setVolunteer(chatId);

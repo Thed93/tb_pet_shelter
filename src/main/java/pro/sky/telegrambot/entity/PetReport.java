@@ -1,9 +1,9 @@
 package pro.sky.telegrambot.entity;
 
-import com.pengrad.telegrambot.model.PhotoSize;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * class of users reports
@@ -35,14 +35,20 @@ public class PetReport {
     /**
      * photo, that user send
      */
-    @Column(length = 20, nullable = true, columnDefinition = "oid")
-    private PhotoSize[] photo;
+    @Column(length = 20, nullable = true, columnDefinition = "bytea")
+    private byte[] photo;
 
     /**
      * user's report
      */
     @Column(length = 2000, nullable = true)
-    private String text;
+    private String diet;
+
+    @Column(name = "well_being", length = 2000, nullable = true)
+    private String wellBeing;
+
+    @Column(name = "change_in_behavior", length = 2000, nullable = true)
+    private String changeInBehavior;
 
     /**
      * number of report, that this user send
@@ -50,16 +56,26 @@ public class PetReport {
     @Column(name = "report_number", nullable = false)
     private int reportNumber;
 
-
-
-    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text) {
+    public PetReport(UserChat user, LocalDateTime dateTime, byte[] photo, String diet, String wellBeing, String changeInBehavior, int reportNumber) {
         this.user = user;
         this.dateTime = dateTime;
         this.photo = photo;
-        this.text = text;
+        this.diet = diet;
+        this.wellBeing = wellBeing;
+        this.changeInBehavior = changeInBehavior;
+        this.reportNumber = reportNumber;
     }
 
     public PetReport() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UserChat getUser() {
@@ -78,20 +94,36 @@ public class PetReport {
         this.dateTime = dateTime;
     }
 
-    public PhotoSize[] getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(PhotoSize[] photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
-    public String getText() {
-        return text;
+    public String getDiet() {
+        return diet;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDiet(String diet) {
+        this.diet = diet;
+    }
+
+    public String getWellBeing() {
+        return wellBeing;
+    }
+
+    public void setWellBeing(String wellBeing) {
+        this.wellBeing = wellBeing;
+    }
+
+    public String getChangeInBehaviour() {
+        return changeInBehavior;
+    }
+
+    public void setChangeInBehavior(String changeInBehavior) {
+        this.changeInBehavior = changeInBehavior;
     }
 
     public int getReportNumber() {
@@ -102,7 +134,18 @@ public class PetReport {
         this.reportNumber = reportNumber;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetReport petReport = (PetReport) o;
+        return reportNumber == petReport.reportNumber && Objects.equals(id, petReport.id) && Objects.equals(user, petReport.user) && Objects.equals(dateTime, petReport.dateTime) && Arrays.equals(photo, petReport.photo) && Objects.equals(diet, petReport.diet) && Objects.equals(wellBeing, petReport.wellBeing) && Objects.equals(changeInBehavior, petReport.changeInBehavior);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, user, dateTime, diet, wellBeing, changeInBehavior, reportNumber);
+        result = 31 * result + Arrays.hashCode(photo);
+        return result;
     }
 }

@@ -28,7 +28,7 @@
             <column name="has_chosen_shelter" type="Boolean">
                 <constraints nullable="true"/>
             </column>
-            <column name="bot_state" type="VARCHAR(20)">
+            <column name="bot_state" type="VARCHAR(30)">
                 <constraints nullable="true"/>
             </column>
 
