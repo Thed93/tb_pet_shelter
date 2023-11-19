@@ -1,15 +1,21 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.PhotoSize;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.PetReportRepository;
 import pro.sky.telegrambot.repository.UserChatRepository;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -39,22 +45,30 @@ public class PetReportService {
      */
     private final TelegramBotService telegramBotService;
 
+    private final TelegramBot telegramBot;
 
-    public PetReportService(UserChatRepository userChatRepository, PetReportRepository petReportRepository, TelegramBotService telegramBotService) {
+    private final Handlers handlers;
+
+    private final UserChatService userChatService;
+
+
+    public PetReportService(UserChatRepository userChatRepository, PetReportRepository petReportRepository, TelegramBotService telegramBotService, TelegramBot telegramBot, Handlers handlers, UserChatService userChatService) {
         this.userChatRepository = userChatRepository;
         this.petReportRepository = petReportRepository;
         this.telegramBotService = telegramBotService;
+        this.telegramBot = telegramBot;
+        this.handlers = handlers;
+        this.userChatService = userChatService;
     }
 
     public void createPetReport(Long chatId) {
         LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
         UserChat user = userChatRepository.findUserChatByUserId(chatId).get();
-        PetReport petReport = new PetReport(user, dateTime, null, null, null, null);
+        PetReport petReport = new PetReport(user, dateTime, null, null, null, null, 1);
         petReportRepository.save(petReport);
     }
 
     /**
-     *
      * save the report of the person who adopted the pet from the shelter
      * <br>
      * use repository methods:
@@ -64,10 +78,49 @@ public class PetReportService {
      * {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
      *
      * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
+     * @param photo
      */
 
-    public void savePhoto() {
+    public void savePhoto(Long chatId, PhotoSize[] photoSizes) {
+                    PhotoSize photoSize = photoSizes[photoSizes.length - 1];
+            String fileId = photoSize.fileId();
+            GetFileResponse getFileResponse = telegramBot.execute(new GetFile(fileId));
+            if (getFileResponse.isOk()) {
+                try {
+                    byte[] data = telegramBot.getFileContent(getFileResponse.file());
+                    PetReport petReport = petReportRepository.findLastPetReportByUserId(chatId).get();
+                    petReport.setPhoto(data);
+                    petReportRepository.save(petReport);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                userChatService.setWaitingForDietState(chatId);
+                handlers.waitingForDiet(chatId);
+            }
+    }
 
+    public void saveDiet(String text, Long chatId) {
+        PetReport petReport = petReportRepository.findLastPetReportByUserId(chatId).get();
+        petReport.setDiet(text);
+        petReportRepository.save(petReport);
+        userChatService.setWaitingForWellBeingState(chatId);
+        handlers.waitingForWellBeing(chatId);
+    }
+
+    public void saveWellBeing(String text, Long chatId) {
+        PetReport petReport = petReportRepository.findLastPetReportByUserId(chatId).get();
+        petReport.setWellBeing(text);
+        petReportRepository.save(petReport);
+        handlers.waitingForChangeInBehavior(chatId);
+        userChatService.setChangeInBehaviorState(chatId);
+    }
+
+    public void saveChangeInBehavior(String text, Long chatId) {
+        PetReport petReport = petReportRepository.findLastPetReportByUserId(chatId).get();
+        petReport.setChangeInBehavior(text);
+        petReportRepository.save(petReport);
+        handlers.reportAccepted(chatId);
+        userChatService.setStartState(chatId);
     }
 
     @Transactional
@@ -86,7 +139,7 @@ public class PetReportService {
                 telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите рацион животного");
             } else if (petReport.getWellBeing().isEmpty()) {
                 telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите общее самочувствие и привыкание к новому месту");
-            } else if (petReport.getChangeInBehavior().isEmpty()) {
+            } else if (petReport.getChangeInBehaviour().isEmpty()) {
                 telegramBotService.sendMessage(petReport.getUser().getUserId(), "Опишите изменение в поведении: отказ от старых привычек, приобретение новых");
             } else {
                 petReportRepository.save(petReport);

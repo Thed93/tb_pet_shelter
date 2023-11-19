@@ -1,7 +1,5 @@
 package pro.sky.telegrambot.entity;
 
-import com.pengrad.telegrambot.model.PhotoSize;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -38,7 +36,7 @@ public class PetReport {
      * photo, that user send
      */
     @Column(length = 20, nullable = true, columnDefinition = "bytea")
-    private PhotoSize[] photo;
+    private byte[] photo;
 
     /**
      * user's report
@@ -58,13 +56,18 @@ public class PetReport {
     @Column(name = "report_number", nullable = false)
     private int reportNumber;
 
-    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String diet, String wellBeing, String changeInBehavior) {
+    public PetReport(UserChat user, LocalDateTime dateTime, byte[] photo, String diet, String wellBeing, String changeInBehavior, int reportNumber) {
         this.user = user;
         this.dateTime = dateTime;
         this.photo = photo;
         this.diet = diet;
         this.wellBeing = wellBeing;
         this.changeInBehavior = changeInBehavior;
+        this.reportNumber = reportNumber;
+    }
+
+    public PetReport() {
+
     }
 
     public Long getId() {
@@ -91,11 +94,11 @@ public class PetReport {
         this.dateTime = dateTime;
     }
 
-    public PhotoSize[] getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(PhotoSize[] photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
@@ -115,7 +118,7 @@ public class PetReport {
         this.wellBeing = wellBeing;
     }
 
-    public String getChangeInBehavior() {
+    public String getChangeInBehaviour() {
         return changeInBehavior;
     }
 

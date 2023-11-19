@@ -175,8 +175,14 @@ public class HandlerText {
         return "Вам скоро наберет один из наших волонтеров, всего хорошего!";
     }
 
-    public String requestPhoto(){ return "Для отчета отправьте, пожалуйста, фото животного.";}
+    public String requestPhoto(){ return "Для отчета отправьте, пожалуйста, фото животного"; }
 
+    public String requestDietText() { return "Опишите рацион животного"; }
 
+    public String requestWellBeingText() { return "Опишите общее самочувствие и привыкание к новому месту"; }
+
+    public String requestChangeInBehaviorText() { return "Опишите изменение в поведении: отказ от старых привычек, приобретение новых"; }
+
+    public String reportAcceptedText() { return "Спасибо за ежедневный отчет о питомце!"; }
 
 }

@@ -123,6 +123,22 @@ public class Handlers {
 
     public void reportMenu(String text, long chatId){
         telegramBotService.sendMessage(chatId, handlerText.requestPhoto());
-
     }
+
+    public void waitingForDiet(long chatId) {
+        telegramBotService.sendMessage(chatId, handlerText.requestDietText());
+    }
+
+    public void waitingForWellBeing(long chatId) {
+        telegramBotService.sendMessage(chatId, handlerText.requestWellBeingText());
+    }
+
+    public void waitingForChangeInBehavior(long chatId) {
+        telegramBotService.sendMessage(chatId, handlerText.requestChangeInBehaviorText());
+    }
+
+    public void reportAccepted(long chatId) {
+        telegramBotService.sendMessage(chatId, handlerText.reportAcceptedText());
+    }
+
 }
