@@ -36,7 +36,13 @@ public class UserChatService {
 
     public BotState getUserChatStatus(long id) {
         LOGGER.info(userChatRepository.findUserChatByUserId(id).get().getBotState());
-        return BotState.valueOf(userChatRepository.findUserChatByUserId(id).get().getBotState());
+        return BotState.valueOf(userChatRepository.findUserChatByUserId(id).orElseThrow(UserNotFoundException::new).getBotState());
+    }
+
+    public void setUserChatStatus(Long chatId, BotState botState) {
+        UserChat userChat = userChatRepository.findUserChatByUserId(chatId).orElseThrow(UserNotFoundException::new);
+        userChat.setBotState(botState.toString());
+        userChatRepository.save(userChat);
     }
 
     /**
@@ -138,7 +144,4 @@ public class UserChatService {
         UserChat userChat = findById(chatId);
         return userChat.getCurrentChosenShelter();
     }
-
-
-
 }

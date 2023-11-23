@@ -14,7 +14,9 @@ public enum BotState {
     ADOPTION("/adoption"),
     REPORT("/report"),
     VOLUNTEER("/volunteer"),
-    HELP("/help");
+    HELP("/help"),
+    REPORT_PHOTO("/reportPhoto"),
+    REPORT_TEXT("/reportText");
 
     private final String state;
 

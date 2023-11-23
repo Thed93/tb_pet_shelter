@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.PhotoSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * class of users reports
@@ -35,8 +36,8 @@ public class PetReport {
     /**
      * photo, that user send
      */
-    @Column(length = 20, nullable = true, columnDefinition = "oid")
-    private PhotoSize[] photo;
+    @Column(nullable = true)
+    private String photoPath;
 
     /**
      * user's report
@@ -44,19 +45,20 @@ public class PetReport {
     @Column(length = 2000, nullable = true)
     private String text;
 
-    /**
+/*    *//**
      * number of report, that this user send
-     */
+     *//*
     @Column(name = "report_number", nullable = false)
-    private int reportNumber;
+    private int reportNumber;*/
 
+    private String status;
 
-
-    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text) {
+    public PetReport(UserChat user, LocalDateTime dateTime, String photoPath, String text, String status) {
         this.user = user;
         this.dateTime = dateTime;
-        this.photo = photo;
+        this.photoPath = photoPath;
         this.text = text;
+        this.status = status;
     }
 
     public PetReport() {
@@ -78,12 +80,12 @@ public class PetReport {
         this.dateTime = dateTime;
     }
 
-    public PhotoSize[] getPhoto() {
-        return photo;
+    public String getPhotoPath() {
+        return photoPath;
     }
 
-    public void setPhoto(PhotoSize[] photo) {
-        this.photo = photo;
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     public String getText() {
@@ -94,15 +96,36 @@ public class PetReport {
         this.text = text;
     }
 
-    public int getReportNumber() {
+/*    public int getReportNumber() {
         return reportNumber;
     }
 
     public void setReportNumber(int reportNumber) {
         this.reportNumber = reportNumber;
-    }
+    }*/
 
     public Long getId() {
         return id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetReport petReport = (PetReport) o;
+        return Objects.equals(id, petReport.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

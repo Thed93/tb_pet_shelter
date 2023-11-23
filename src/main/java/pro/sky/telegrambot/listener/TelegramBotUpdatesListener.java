@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
-import pro.sky.telegrambot.entity.Help;
-import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
@@ -88,7 +85,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String userSurname = message.chat().lastName();
             Long chatId = message.chat().id();
             LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
-            if (update.message() != null && message.text() != null) {
+            if (update.message() != null && (message.text() != null || message.photo() != null)) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
                 BotState currentState = userChatService.getUserChatStatus(chatId);
@@ -98,7 +95,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         start.acceptStartCommands(chatId);
                         break;
                     case CHOOSE_SHELTER:
-                        LOGGER.info("invoke");
                         choseShelter.acceptChoseShelterCommand(text, chatId);
                         break;
                     case MENU:
@@ -111,6 +107,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         adoption.adoptionMenu(text, chatId);
                         break;
                     case REPORT:
+                        petReportService.newReport(chatId);
+                        break;
+                    case REPORT_PHOTO:
+                        petReportService.reportPhoto(message.photo(), chatId);
+                        break;
+                    case REPORT_TEXT:
+                        petReportService.reportText(text, chatId);
                         break;
                     case HELP:
                         break;
