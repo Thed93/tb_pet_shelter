@@ -1,28 +1,26 @@
 package pro.sky.telegrambot.enums;
 
-import org.springframework.stereotype.Component;
-
 public enum Commands {
     START("/start"),
     CAT("/cat"),
     DOG("/dog"),
     INFORMATION("/information"),
-    ADOPTION("/howToTakePet"),
+    ADOPTION("/how_to_take_pet"),
     REPORT("/report"),
     WELCOME_RULES("/welcomeRules"),
     DOCS("/docs"),
-    PET_TRANSPORTATION("/petTransportation"),
-    BABY_PET_HOUSE("/babyPetHouse"),
-    PET_HOUSE("/petHouse"),
-    SPECIAL_PET_HOUSE("/specialPetHouse"),
-    ADVICE_DOG_HANDLER("/adviceDogHandler"),
-    DOG_HANDLER("/dogHandler"),
-    REFUSE_PET("/refusePet"),
+    PET_TRANSPORTATION("/pet_transportation"),
+    BABY_PET_HOUSE("/baby_pet_house"),
+    PET_HOUSE("/pet_house"),
+    SPECIAL_PET_HOUSE("/special_pet_house"),
+    ADVICE_DOG_HANDLER("/advice_dog_handler"),
+    DOG_HANDLER("/dog_handler"),
+    REFUSE_PET("/refuse_pet"),
     VOLUNTEER("/volunteer"),
     ABOUT("/about"),
-    WORKING_HOURS("/workingHours"),
-    SECURITY_NUMBER("/securityNumber"),
-    SAFETY_PRECAUTIONS("/safetyPrecautions"),
+    WORKING_HOURS("/working_hours"),
+    SECURITY_NUMBER("/security_number"),
+    SAFETY_PRECAUTIONS("/safety_precautions"),
     HELP("/help");
 
 
@@ -32,7 +30,8 @@ public enum Commands {
         this.commandText = commandText;
     }
 
-    public String getCommandText() {
+    @Override
+    public String toString() {
         return commandText;
     }
 }

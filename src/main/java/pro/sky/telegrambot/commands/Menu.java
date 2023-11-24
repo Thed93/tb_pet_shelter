@@ -2,9 +2,9 @@ package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
-import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
+import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
 
@@ -19,15 +19,17 @@ public class Menu {
      */
     private final TelegramBotService telegramBotService;
     private final UserChatService userChatService;
+    private final PetReportService petReportService;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, Handlers handlers) {
+    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, PetReportService petReportService, Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.userChatService = userChatService;
+        this.petReportService = petReportService;
         this.handlers = handlers;
     }
 
@@ -39,19 +41,20 @@ public class Menu {
      * @param chatId
      */
     public void acceptInfoCommands(String text, Long chatId) {
-        if (text.equals(Commands.INFORMATION.getCommandText())) {
+        if (text.equals(Commands.INFORMATION.toString())) {
             userChatService.setInfo(chatId);
             infoMenu(chatId);
         }
-        if (text.equals(Commands.ADOPTION.getCommandText())) {
+        if (text.equals(Commands.ADOPTION.toString())) {
             userChatService.setAdoption(chatId);
             adoptionMenu(chatId);
         }
-        if (text.equals(Commands.REPORT.getCommandText())) {
-            userChatService.setReport(chatId);
-            reportMenu(text, chatId);
+        if (text.equals(Commands.REPORT.toString())) {
+            /*userChatService.setReport(chatId);
+            reportMenu(text, chatId);*/
+            petReportService.report(chatId);
         }
-        if (text.equals(Commands.VOLUNTEER.getCommandText())) {
+        if (text.equals(Commands.VOLUNTEER.toString())) {
             userChatService.setVolunteer(chatId);
             volunteer(chatId);
         }

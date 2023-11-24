@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import pro.sky.telegrambot.commands.ChoseShelter;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.repository.PetReportRepository;
 
 import java.io.*;
@@ -45,29 +47,50 @@ public class PetReportService {
      * copy of Telegram - bot for sending message
      */
     private final TelegramBotService telegramBotService;
+    private final ChoseShelter choseShelter;
     private final String photoDir;
 
 
     public PetReportService(PetReportRepository petReportRepository,
                             UserChatService userChatService,
                             TelegramBot telegramBot, TelegramBotService telegramBotService,
-                            @Value("${path.to.report.photos.folder}") String photoDir) {
+                            ChoseShelter choseShelter, @Value("${path.to.report.photos.folder}") String photoDir) {
         this.petReportRepository = petReportRepository;
         this.userChatService = userChatService;
         this.telegramBot = telegramBot;
         this.telegramBotService = telegramBotService;
+        this.choseShelter = choseShelter;
         this.photoDir = photoDir;
     }
 
-    public void newReport(Long chatId) {
-        PetReport petReport = new PetReport();
+    public void report(String text, PhotoSize[] photoSizes, Long chatId) {
+        UserChat userChat = userChatService.findById(chatId);
+        PetReport petReport = petReportRepository.findPetReportByUserAndStatus(userChat, "IN_PROGRESS");
+
+        if (petReport == null) {
+            petReport = new PetReport();
+            newReport(petReport, chatId);
+        } else {
+            if (petReport.getPhotoPath() == null) {
+                reportPhoto(photoSizes, chatId);
+            } else if (petReport.getText() == null) {
+                reportText(text, chatId);
+            }
+        }
+    }
+
+    public void report(Long chatId) {
+        report(null, null, chatId);
+    }
+
+    private void newReport(PetReport petReport, Long chatId) {
         UserChat user = userChatService.findById(chatId);
         petReport.setUser(user);
         petReport.setDateTime(LocalDateTime.now());
         petReport.setStatus("IN_PROGRESS");
         petReportRepository.save(petReport);
-        userChatService.setUserChatStatus(chatId, BotState.REPORT_PHOTO);
-        telegramBotService.sendMessage(chatId, "Отправте фото");
+        userChatService.setUserChatStatus(chatId, BotState.REPORT);
+        telegramBotService.sendMessage(chatId, "Отправьте фото");
     }
 
     public void reportText(String text, Long chatId) {
@@ -78,8 +101,10 @@ public class PetReportService {
             petReport.setText(text);
             petReport.setStatus("FULL_INFO");
             petReportRepository.save(petReport);
-            userChatService.setUserChatStatus(chatId, BotState.MENU);
+            userChatService.setUserChatStatus(chatId, BotState.CHOOSE_SHELTER);
             telegramBotService.sendMessage(chatId, "Отчет сформирован");
+            LOGGER.info(userChatService.getShelter(chatId));
+            choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
         }
     }
 
@@ -115,7 +140,7 @@ public class PetReportService {
                 bis.transferTo(bos);
                 petReport.setPhotoPath(filePath.toString());
                 petReportRepository.save(petReport);
-                userChatService.setUserChatStatus(chatId, BotState.REPORT_TEXT);
+                //userChatService.setUserChatStatus(chatId, BotState.REPORT_TEXT);
                 telegramBotService.sendMessage(chatId, "Введите текст");
             }
         } else {

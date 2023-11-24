@@ -14,15 +14,11 @@ public enum BotState {
     ADOPTION("/adoption"),
     REPORT("/report"),
     VOLUNTEER("/volunteer"),
-    HELP("/help"),
-    REPORT_PHOTO("/reportPhoto"),
-    REPORT_TEXT("/reportText");
+    HELP("/help");
 
     private final String state;
 
     BotState(String commandText) {
         this.state = commandText;
     }
-
-
 }

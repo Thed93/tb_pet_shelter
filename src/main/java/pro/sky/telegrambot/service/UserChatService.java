@@ -122,14 +122,14 @@ public class UserChatService {
     @Transactional
     public void setCat(long chatId){
         UserChat userChat = findById(chatId);
-        userChat.setCurrentChosenShelter(ShelterType.CAT_SHELTER.toString());
+        userChat.setCurrentChosenShelter(ShelterType.CAT_SHELTER.name());
         userChatRepository.save(userChat);
     }
 
     @Transactional
     public void setDog(long chatId){
         UserChat userChat = findById(chatId);
-        userChat.setCurrentChosenShelter(ShelterType.DOG_SHELTER.toString());
+        userChat.setCurrentChosenShelter(ShelterType.DOG_SHELTER.name());
         userChatRepository.save(userChat);
     }
 

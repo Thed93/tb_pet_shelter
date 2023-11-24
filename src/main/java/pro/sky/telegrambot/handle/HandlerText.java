@@ -29,7 +29,7 @@ public class HandlerText {
         }
         return "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
                 "'/information' - Узнать информацию о приюте \n" +
-                "'/howToTakePet' - Как взять животное из приюта\n" +
+                "'/how_to_take_pet' - Как взять животное из приюта\n" +
                 "'/report' - Прислать отчет о питомце\n" +
                 "'/volunteer' - Позвать волонтера";
     }
@@ -37,10 +37,10 @@ public class HandlerText {
     public String handleAdoptionConsultationText(){
         return "Подскажите, какая информация о приюте вас интересует? \n" +
                 "'/about' - рассказать о приюте.\n" +
-                "'/workingHours' - выдать расписание работы приюта и адрес, схему проезда.\n" +
-                "'/securityNumber' - выдать контактные данные охраны для оформления пропуска на машину.\n" +
-                "'/safetyPrecautions' - выдать общие рекомендации о технике безопасности на территории приюта.\n" +
-                "'/writeData' - принять и записать контактные данные для связи.";
+                "'/working_hours' - выдать расписание работы приюта и адрес, схему проезда.\n" +
+                "'/security_number' - выдать контактные данные охраны для оформления пропуска на машину.\n" +
+                "'/safety_precautions' - выдать общие рекомендации о технике безопасности на территории приюта.\n" +
+                "'/write_data' - принять и записать контактные данные для связи.";
     }
 
     public String aboutShelterText(String shelterType){
@@ -52,7 +52,7 @@ public class HandlerText {
     }
 
     public String workingHoursText(String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.name())) {
             return  "Рабочие часы приюта: 8:00 - 18:00 + \n" +
                     "Приют находится по адресу: г. Калининград, ул. Куклачева, д.9";
         } else {
@@ -62,7 +62,7 @@ public class HandlerText {
     }
 
     public String securityNumberText (String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.name())) {
             return  "Номер охраны: 8-999-999-99-99";
         } else {
             return "Номер охраны: 8-888-888-88-88";
@@ -70,7 +70,7 @@ public class HandlerText {
     }
 
     public String safetyPrecautionsText (String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.name())) {
             return "Не быть мышью, принести с собой коробку";
         } else {
             return "Не быть куском мяса, принести палку";
@@ -84,24 +84,24 @@ public class HandlerText {
     public String howToTakePetText(String shelterType){
         StringBuilder stringBuilder = new StringBuilder(
                 "Подскажите, какая информация о приюте вас интересует?+\n" +
-                        "'/welcomeRules' - выдать правила знакомства с животным до того, как забрать его из приюта.+\n" +
+                        "'/welcome_rules' - выдать правила знакомства с животным до того, как забрать его из приюта.+\n" +
                         "'/docs' - выдать список документов, необходимых для того, чтобы взять животное из приюта.+\n" +
-                        "'/petTransportation' - выдать список рекомендаций по транспортировке животного. +\n" +
-                        "'/babyPetHouse' - выдать список рекомендаций по обустройству дома для щенка/котенка. +\n" +
-                        "'/petHouse' - выдать список рекомендаций по обустройству дома для взрослого животного.+\n" +
-                        "'/specialPetHouse' - выдать список рекомендаций по обустройству дома для животного с ограниченными возможностями (зрение, передвижение).+\n");
-        String text = "'/adviceDogHandler' - выдать советы кинолога по первичному общению с собакой.+\n" +
-                "'/dogHandler' - выдать рекомендации по проверенным кинологам для дальнейшего обращения к ним.";
-        if (shelterType.equals(ShelterType.DOG_SHELTER.toString())) {
+                        "'/pet_transportation' - выдать список рекомендаций по транспортировке животного. +\n" +
+                        "'/baby_pet_house' - выдать список рекомендаций по обустройству дома для щенка/котенка. +\n" +
+                        "'/pet_house' - выдать список рекомендаций по обустройству дома для взрослого животного.+\n" +
+                        "'/special_pet_house' - выдать список рекомендаций по обустройству дома для животного с ограниченными возможностями (зрение, передвижение).+\n");
+        String text = "'/advice_dog_handler' - выдать советы кинолога по первичному общению с собакой.+\n" +
+                "'/dog_handler' - выдать рекомендации по проверенным кинологам для дальнейшего обращения к ним.";
+        if (shelterType.equals(ShelterType.DOG_SHELTER.name())) {
             stringBuilder.append(text);
         }
-        String text1 = "'/refusePet' - выдать список причин, почему могут отказать и не дать забрать собаку из приюта. +\n" +
+        String text1 = "'/refuse_pet' - выдать список причин, почему могут отказать и не дать забрать собаку из приюта. +\n" +
                 "'/volunteer' - позвать волонтера.";
         stringBuilder.append(text1);
         return stringBuilder.toString();
     }
     public String welcomeRulesText(String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.name())) {
             return  "Перед тем, как забрать к себе кошку," +
                     "приедите в приют и понаблюдайте," +
                     "какой у каждого питомца характер, повадки и " +

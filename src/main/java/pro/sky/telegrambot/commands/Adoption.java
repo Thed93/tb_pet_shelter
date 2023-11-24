@@ -53,7 +53,7 @@ public class Adoption {
 
         // Пока что точно такая же история в Info, потом испраится, сейчас пока нет времени на это
 
-        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        Commands currentCommand = Commands.valueOf(text.substring(1).toUpperCase());
         LOG.info(currentCommand.toString());
 
         switch (currentCommand){
@@ -90,14 +90,14 @@ public class Adoption {
         }
     }
 
-    private final String toConstantStyle(String string) {
+/*    private final String toConstantStyle(String string) {
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
                 return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
             }
         }
         return string.toUpperCase();
-    }
+    }*/
 
     /**
      * method, if user send {@code "/welcomeRules" }

@@ -1,7 +1,6 @@
 package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -40,7 +39,7 @@ public class ChoseShelter {
      * @param chatId
      */
     public void acceptChoseShelterCommand(String text, long chatId){
-        if(text.equals("/dog") || text.equals("/cat")){
+        if(text.equals(ShelterType.DOG_SHELTER.toString()) || text.equals(ShelterType.CAT_SHELTER.toString())){
             if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER)){
                 shelterType(text, chatId);
             }
@@ -59,11 +58,11 @@ public class ChoseShelter {
      */
 
     private void shelterType(String text, long chatId) {
-        if (text.equals(Commands.DOG.getCommandText())) {
+        if (text.equals(ShelterType.DOG_SHELTER.toString())) {
             userChatService.setMenu(chatId);
             userChatService.setDog(chatId);
             handlers.handleShelterConsultation(chatId, text);
-        } else if (text.equals(Commands.CAT.getCommandText())) {
+        } else if (text.equals(ShelterType.CAT_SHELTER.toString())) {
             userChatService.setMenu(chatId);
             userChatService.setCat(chatId);
             handlers.handleShelterConsultation(chatId, text);

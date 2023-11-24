@@ -44,7 +44,7 @@ public class Info {
         // Пока что пускай так, небыло времени что-то лучше придумать и здесь нет команды /writeData
         // хотя бот предлагает эту команду
 
-        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        Commands currentCommand = Commands.valueOf(text.substring(1).toUpperCase());
         switch (currentCommand) {
             case ABOUT:
                 getShelterInfo(chatId);
@@ -66,14 +66,14 @@ public class Info {
         }
     }
 
-    private final String toConstantStyle(String string) {
+/*    private final String toConstantStyle(String string) {
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
                 return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
             }
         }
         return string.toUpperCase();
-    }
+    }*/
 
 
     /**

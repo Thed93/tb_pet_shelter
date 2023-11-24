@@ -107,14 +107,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         adoption.adoptionMenu(text, chatId);
                         break;
                     case REPORT:
-                        petReportService.newReport(chatId);
+                        petReportService.report(text, message.photo(), chatId);
                         break;
-                    case REPORT_PHOTO:
+                    /*case REPORT_PHOTO:
                         petReportService.reportPhoto(message.photo(), chatId);
                         break;
                     case REPORT_TEXT:
                         petReportService.reportText(text, chatId);
-                        break;
+                        break;*/
                     case HELP:
                         break;
                     default:
