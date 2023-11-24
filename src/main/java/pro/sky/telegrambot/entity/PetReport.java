@@ -94,21 +94,9 @@ public class PetReport {
         this.photoPath = photoPath;
     }
 
-/*    public String getText() {
-        return text;
-    }*/
-
     public void setChangeInBehavior(String changeInBehavior) {
         this.changeInBehavior = changeInBehavior;
     }
-
-/*    public int getReportNumber() {
-        return reportNumber;
-    }
-
-    public void setReportNumber(int reportNumber) {
-        this.reportNumber = reportNumber;
-    }*/
 
     public Long getId() {
         return id;
@@ -120,6 +108,26 @@ public class PetReport {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDiet() {
+        return diet;
+    }
+
+    public void setDiet(String diet) {
+        this.diet = diet;
+    }
+
+    public String getWellBeing() {
+        return wellBeing;
+    }
+
+    public void setWellBeing(String wellBeing) {
+        this.wellBeing = wellBeing;
+    }
+
+    public String getChangeInBehavior() {
+        return changeInBehavior;
     }
 
     @Override

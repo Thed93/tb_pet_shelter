@@ -41,7 +41,7 @@ public class Menu {
      * @param chatId
      */
     public void acceptInfoCommands(String text, Long chatId) {
-        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        Commands currentCommand = Commands.valueOf(text.substring(1).toUpperCase());
         switch (currentCommand){
             case INFORMATION:
                 userChatService.setInfo(chatId);
@@ -52,12 +52,11 @@ public class Menu {
                 adoptionMenu(chatId);
                 break;
             case REPORT:
-                //userChatService.setReport(chatId);
-                //reportMenu(text, chatId);
-                //petReportService.createPetReport(chatId);
+/*                userChatService.setReport(chatId);
+                reportMenu(text, chatId);*/
                 petReportService.report(chatId);
                 break;
-            case  VOLUNTEER:
+            case VOLUNTEER:
                 userChatService.setVolunteer(chatId);
                 volunteer(chatId);
                 break;
@@ -68,19 +67,6 @@ public class Menu {
                         "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
                         "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
                 break;
-        }
-
-        if (text.equals(Commands.INFORMATION.getCommandText())) {
-
-        }
-        if (text.equals(Commands.ADOPTION.getCommandText())) {
-
-        }
-        if (text.equals(Commands.REPORT.getCommandText())) {
-
-        }
-        if (text.equals(Commands.VOLUNTEER.getCommandText())) {
-
         }
     }
 
@@ -116,7 +102,7 @@ public class Menu {
      * @param chatId
      */
     private void reportMenu(String text, long chatId){
-        handlers.reportMenu(text, chatId);
+        handlers.reportMenu(chatId);
     }
 
     /**
@@ -130,12 +116,4 @@ public class Menu {
         handlers.volunteer(chatId);
     }
 
-    private final String toConstantStyle(String string) {
-        for (int i = 0; i < string.length(); i++) {
-            if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
-                return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
-            }
-        }
-        return string.toUpperCase();
-    }
 }

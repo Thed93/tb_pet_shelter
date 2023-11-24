@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-adopted" author="lalcalutik">
+        <preConditions>
+            <not>
+                <tableExists tableName="adopted"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="adopted">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" unique="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="adopted" baseColumnNames="user_id"
+                                 constraintName="fk_adopted_user_id"
+                                 referencedTableName="user"
+                                 referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="adopted" baseColumnNames="pet_id"
+                                 constraintName="fk_adopted_pet_id"
+                                 referencedTableName="pets"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>
