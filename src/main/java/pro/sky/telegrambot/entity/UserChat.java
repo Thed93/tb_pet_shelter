@@ -21,13 +21,13 @@ public class UserChat {
     /**
      * user's name
      */
-    @Column(length = 20, nullable = false)
+    @Column(length = 40, nullable = false)
     private String name;
 
     /**
      * user's surname
      */
-    @Column(length = 20, nullable = true)
+    @Column(length = 40, nullable = true)
     private String surname;
 
     /**

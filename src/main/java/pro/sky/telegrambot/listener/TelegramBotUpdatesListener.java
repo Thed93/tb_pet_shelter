@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
 import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
 import pro.sky.telegrambot.service.HelpService;
@@ -45,13 +46,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final HelpService helpService;
 
+    private final Back back;
+
     private final UserChatService userChatService;
 
     private final TelegramBotService telegramBotService;
 
     private final Handlers handlers;
 
-    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
+    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, Back back, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
         this.start = start;
         this.menu = menu;
         this.adoption = adoption;
@@ -60,6 +63,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.userChatRepository = userChatRepository;
         this.petReportService = petReportService;
         this.helpService = helpService;
+        this.back = back;
         this.userChatService = userChatService;
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
@@ -87,6 +91,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             if (update.message() != null && message.text() != null) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
+                if (text.equals(Commands.START.getCommandText())){
+                    userChatService.setStartState(chatId);
+                }
+                if (text.equals(Commands.BACK.toString())){
+                    back.goBack(chatId);
+                }
                 BotState currentState = userChatService.getUserChatStatus(chatId);
                 LOGGER.info(currentState.toString());
                 switch (currentState) {

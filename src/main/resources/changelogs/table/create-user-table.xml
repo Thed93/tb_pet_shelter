@@ -16,10 +16,10 @@
             <column name="user_id" autoIncrement="false" type="BIGINT">
                 <constraints primaryKey="true" unique="true"/>
             </column>
-            <column name="name" type="VARCHAR(20)">
+            <column name="name" type="VARCHAR(40)">
                 <constraints nullable="false"/>
             </column>
-            <column name="surname" type="VARCHAR(20)">
+            <column name="surname" type="VARCHAR(40)">
                 <constraints nullable="true"/>
             </column>
             <column name="current_chosen_shelter" type="VARCHAR(20)">

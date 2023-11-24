@@ -23,7 +23,8 @@ public enum Commands {
     WORKING_HOURS("/workingHours"),
     SECURITY_NUMBER("/securityNumber"),
     SAFETY_PRECAUTIONS("/safetyPrecautions"),
-    HELP("/help");
+    HELP("/help"),
+    BACK("/back");
 
 
     private final String commandText;

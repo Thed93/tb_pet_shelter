@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.handle;
 
 import org.springframework.stereotype.Component;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
 
 
@@ -16,7 +17,7 @@ public class HandlerText {
         return userName + " , приветствую вас!\n" +
                 "Я - учебный бот, симулирующий работу приюта для животных. \n" +
                 "Для дальнейшей работы напишите, какого типа приют вас интересует: \n" +
-                "'/dog' - для собак, '/cat' - для кошек";
+                Commands.DOG.getCommandText()+ " - для собак, " +Commands.CAT.getCommandText() +" - для кошек";
     }
 
 
@@ -28,23 +29,27 @@ public class HandlerText {
             shelterType="собак";
         }
         return "Выберите, какая информация по приюту для " + animalType + " вас интересует:\n" +
-                "'/information' - Узнать информацию о приюте \n" +
-                "'/howToTakePet' - Как взять животное из приюта\n" +
-                "'/report' - Прислать отчет о питомце\n" +
-                "'/volunteer' - Позвать волонтера";
+                Commands.INFORMATION.getCommandText()+ " - Узнать информацию о приюте \n" +
+                Commands.ADOPTION.getCommandText()+" - Как взять животное из приюта\n" +
+                Commands.REPORT.getCommandText()+" - Прислать отчет о питомце\n" +
+                Commands.VOLUNTEER.getCommandText()+" - Позвать волонтера\n"+
+                Commands.BACK.getCommandText()+" - вернуться в предыдущее меню\n" +
+                Commands.START.getCommandText()+" - Вернуться в начало";
     }
 
     public String handleAdoptionConsultationText(){
         return "Подскажите, какая информация о приюте вас интересует? \n" +
-                "'/about' - рассказать о приюте.\n" +
-                "'/workingHours' - выдать расписание работы приюта и адрес, схему проезда.\n" +
-                "'/securityNumber' - выдать контактные данные охраны для оформления пропуска на машину.\n" +
-                "'/safetyPrecautions' - выдать общие рекомендации о технике безопасности на территории приюта.\n" +
-                "'/writeData' - принять и записать контактные данные для связи.";
+                Commands.ABOUT.getCommandText()+" - рассказать о приюте.\n" +
+                Commands.WORKING_HOURS.getCommandText()+" - выдать расписание работы приюта и адрес, схему проезда.\n" +
+                Commands.SECURITY_NUMBER.getCommandText()+" - выдать контактные данные охраны для оформления пропуска на машину.\n" +
+                Commands.SAFETY_PRECAUTIONS.getCommandText()+" - выдать общие рекомендации о технике безопасности на территории приюта.\n" +
+                Commands.HELP.getCommandText()+" - принять и записать контактные данные для связи.\n" +
+                Commands.BACK.getCommandText()+" - вернуться в предыдущее меню\n" +
+                Commands.START.getCommandText()+" - Вернуться в начало";
     }
 
     public String aboutShelterText(String shelterType){
-        if (shelterType.equals(ShelterType.CAT_SHELTER)) {
+        if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
             return  "Приют для кошек работает с 1999 года и имеет уже 3 кошки";
         } else {
             return  "Приют для собак не работал никогда";
@@ -84,26 +89,28 @@ public class HandlerText {
     public String howToTakePetText(String shelterType){
         StringBuilder stringBuilder = new StringBuilder(
                 "Подскажите, какая информация о приюте вас интересует?+\n" +
-                        "'/welcomeRules' - выдать правила знакомства с животным до того, как забрать его из приюта.+\n" +
-                        "'/docs' - выдать список документов, необходимых для того, чтобы взять животное из приюта.+\n" +
-                        "'/petTransportation' - выдать список рекомендаций по транспортировке животного. +\n" +
-                        "'/babyPetHouse' - выдать список рекомендаций по обустройству дома для щенка/котенка. +\n" +
-                        "'/petHouse' - выдать список рекомендаций по обустройству дома для взрослого животного.+\n" +
-                        "'/specialPetHouse' - выдать список рекомендаций по обустройству дома для животного с ограниченными возможностями (зрение, передвижение).+\n");
-        String text = "'/adviceDogHandler' - выдать советы кинолога по первичному общению с собакой.+\n" +
-                "'/dogHandler' - выдать рекомендации по проверенным кинологам для дальнейшего обращения к ним.";
+                        Commands.WELCOME_RULES.getCommandText()+" - выдать правила знакомства с животным до того, как забрать его из приюта.+\n" +
+                        Commands.DOCS.getCommandText()+" - выдать список документов, необходимых для того, чтобы взять животное из приюта.+\n" +
+                        Commands.PET_TRANSPORTATION.getCommandText()+" - выдать список рекомендаций по транспортировке животного. +\n" +
+                        Commands.BABY_PET_HOUSE.getCommandText()+" - выдать список рекомендаций по обустройству дома для щенка/котенка. +\n" +
+                        Commands.PET_HOUSE.getCommandText()+" - выдать список рекомендаций по обустройству дома для взрослого животного.+\n" +
+                        Commands.SPECIAL_PET_HOUSE.getCommandText()+" - выдать список рекомендаций по обустройству дома для животного с ограниченными возможностями (зрение, передвижение).+\n");
+        String text = Commands.ADVICE_DOG_HANDLER.getCommandText()+" - выдать советы кинолога по первичному общению с собакой.+\n" +
+                Commands.DOG_HANDLER.getCommandText()+" - выдать рекомендации по проверенным кинологам для дальнейшего обращения к ним.";
         if (shelterType.equals(ShelterType.DOG_SHELTER.toString())) {
             stringBuilder.append(text);
         }
-        String text1 = "'/refusePet' - выдать список причин, почему могут отказать и не дать забрать собаку из приюта. +\n" +
-                "'/volunteer' - позвать волонтера.";
+        String text1 = Commands.REFUSE_PET.getCommandText()+" - выдать список причин, почему могут отказать и не дать забрать собаку из приюта. +\n" +
+                Commands.VOLUNTEER.getCommandText()+" - позвать волонтера. +\n" +
+                Commands.BACK.getCommandText()+" - вернуться в предыдущее меню\n" +
+                Commands.START.getCommandText()+" - Вернуться в начало";
         stringBuilder.append(text1);
         return stringBuilder.toString();
     }
     public String welcomeRulesText(String shelterType){
         if (shelterType.equals(ShelterType.CAT_SHELTER.toString())) {
             return  "Перед тем, как забрать к себе кошку," +
-                    "приедите в приют и понаблюдайте," +
+                    "прийдите в приют и понаблюдайте," +
                     "какой у каждого питомца характер, повадки и " +
                     "особенности поведения. При выборе учитывайте и " +
                     "свой собственный распорядок дня: не стоит брать " +
