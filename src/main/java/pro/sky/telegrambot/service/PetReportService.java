@@ -15,6 +15,7 @@ import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.PetReportRepository;
 
 import java.io.*;
@@ -42,6 +43,7 @@ public class PetReportService {
     private final PetReportRepository petReportRepository;
     private final UserChatService userChatService;
     private final TelegramBot telegramBot;
+    private final Handlers handlers;
 
     /**
      * copy of Telegram - bot for sending message
@@ -53,11 +55,12 @@ public class PetReportService {
 
     public PetReportService(PetReportRepository petReportRepository,
                             UserChatService userChatService,
-                            TelegramBot telegramBot, TelegramBotService telegramBotService,
+                            TelegramBot telegramBot, Handlers handlers, TelegramBotService telegramBotService,
                             ChoseShelter choseShelter, @Value("${path.to.report.photos.folder}") String photoDir) {
         this.petReportRepository = petReportRepository;
         this.userChatService = userChatService;
         this.telegramBot = telegramBot;
+        this.handlers = handlers;
         this.telegramBotService = telegramBotService;
         this.choseShelter = choseShelter;
         this.photoDir = photoDir;
@@ -72,9 +75,13 @@ public class PetReportService {
             newReport(petReport, chatId);
         } else {
             if (petReport.getPhotoPath() == null) {
-                reportPhoto(photoSizes, chatId);
-            } else if (petReport.getText() == null) {
-                reportText(text, chatId);
+                reportPhoto(userChat, petReport, photoSizes);
+            } else if (petReport.getDiet() == null) {
+                reportDiet(userChat, petReport, text);
+            } else if (petReport.getWellBeing() == null) {
+                reportWellBeing(userChat, petReport, text);
+            } else if (petReport.getChangeInBehavior() == null) {
+                reportChangeInBehavior(userChat, petReport, text);
             }
         }
     }
@@ -90,62 +97,62 @@ public class PetReportService {
         petReport.setStatus("IN_PROGRESS");
         petReportRepository.save(petReport);
         userChatService.setUserChatStatus(chatId, BotState.REPORT);
-        telegramBotService.sendMessage(chatId, "Отправьте фото");
+        handlers.reportMenu(chatId);
     }
 
-    public void reportText(String text, Long chatId) {
-        UserChat userChat = userChatService.findById(chatId);
-        PetReport petReport = petReportRepository.findPetReportByUserAndStatus(userChat, "IN_PROGRESS");
-
-        if (petReport != null) {
-            petReport.setText(text);
-            petReport.setStatus("FULL_INFO");
-            petReportRepository.save(petReport);
-            userChatService.setUserChatStatus(chatId, BotState.CHOOSE_SHELTER);
-            telegramBotService.sendMessage(chatId, "Отчет сформирован");
-            LOGGER.info(userChatService.getShelter(chatId));
-            choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
-        }
-    }
-
-    public void reportPhoto(PhotoSize[] photoSizes, Long chatId) {
+    public void reportPhoto(UserChat userChat, PetReport petReport, PhotoSize[] photoSizes) {
         if (photoSizes != null) {
             PhotoSize photoSize = photoSizes[photoSizes.length - 1];
             GetFileResponse getFileResponse = telegramBot.execute(new GetFile(photoSize.fileId()));
             try {
                 String extension = StringUtils.getFilenameExtension(getFileResponse.file().filePath());
                 byte[] data = telegramBot.getFileContent(getFileResponse.file());
-                savePhoto(chatId, data, extension);
+                savePhoto(userChat.getUserId(), petReport, data, extension);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            telegramBotService.sendMessage(chatId, "Пришлите фото");
+            telegramBotService.sendMessage(userChat.getUserId(), "Пришлите фото");
         }
     }
 
-    private void savePhoto(Long chatId, byte[] data, String extension) throws IOException {
-        UserChat userChat = userChatService.findById(chatId);
-        PetReport petReport = petReportRepository.findPetReportByUserAndStatus(userChat, "IN_PROGRESS");
-        if (petReport != null) {
-            Path filePath = Path.of(photoDir, petReport.hashCode() + "." + extension);
-            Files.createDirectories(filePath.getParent());
-            Files.deleteIfExists(filePath);
-            try (
-                    InputStream is = new ByteArrayInputStream(data);
-                    OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                    BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                    BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-            ) {
-                bis.transferTo(bos);
-                petReport.setPhotoPath(filePath.toString());
-                petReportRepository.save(petReport);
-                //userChatService.setUserChatStatus(chatId, BotState.REPORT_TEXT);
-                telegramBotService.sendMessage(chatId, "Введите текст");
-            }
-        } else {
-            //TODO: Доделать здесь
+    private void savePhoto(Long chatId, PetReport petReport, byte[] data, String extension) throws IOException {
+        Path filePath = Path.of(photoDir, petReport.hashCode() + "." + extension);
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = new ByteArrayInputStream(data);
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+            petReport.setPhotoPath(filePath.toString());
+            petReportRepository.save(petReport);
+            handlers.waitingForDiet(chatId);
         }
+    }
+
+    public void reportDiet(UserChat userChat, PetReport petReport, String text) {
+        petReport.setDiet(text);
+        petReportRepository.save(petReport);
+        handlers.waitingForWellBeing(userChat.getUserId());
+    }
+
+    private void reportWellBeing(UserChat userChat, PetReport petReport, String text) {
+        petReport.setWellBeing(text);
+        petReportRepository.save(petReport);
+        handlers.waitingForChangeInBehavior(userChat.getUserId());
+    }
+
+    private void reportChangeInBehavior(UserChat userChat, PetReport petReport, String text) {
+        Long chatId = userChat.getUserId();
+        petReport.setChangeInBehavior(text);
+        petReport.setStatus("FULL_INFO");
+        petReportRepository.save(petReport);
+        userChatService.setUserChatStatus(chatId, BotState.CHOOSE_SHELTER);
+        handlers.reportAccepted(userChat.getUserId());
+        choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
     }
 
     /**
@@ -160,56 +167,7 @@ public class PetReportService {
      *
      * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
      */
-/*    @Transactional
-    public void savePetReport(PetReport petReport) {
-        List<PetReport> ownerReports = petReportRepository.findReportsByUserNameAndUserSurname(petReport.getUser().getName(), petReport.getUser().getSurname());
-        PetReport lastReport = ownerReports.get(0);
-        for (int i = 0; i < ownerReports.size(); i++) {
-            if (lastReport.getReportNumber() < ownerReports.get(i).getReportNumber()) {
-                lastReport = ownerReports.get(i);
-            }
-        }*/
-        /*if (!lastReport.getDateTime().equals(petReport.getDateTime())) {
-            if (petReport.getPhoto().equals(Optional.empty())) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте фото к вашему отчету и отправьте их вместе!");
-            } else if (petReport.getText().isEmpty()) {
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Добавьте текст к вашему отчету и отправьте их вместе!");
-            } else {
-                petReportRepository.save(petReport);
-                telegramBotService.sendMessage(petReport.getUser().getUserId(), "Спасибо за ваш отчет!");
-            }
-        }*/
-//        if (lastReport.getDateTime().equals(newReport.getDateTime()) && !lastReport.getText().isEmpty() && !lastReport.getPhoto().isEmpty()) {
-//            telegramBotService.sendMessage(chatId, "Вы уже отправили отчет за сегодня, спасибо!");
-//        }
-//        if (lastReport.getDateTime().equals(newReport.getDateTime()) && lastReport.getText().isEmpty() && !newReport.getText().isEmpty()) {
-//            lastReport.setText(newReport.getText());
-//            telegramBotService.sendMessage(chatId, "Текст добавлен в ваш сегодняшний отчет!");
-//            if (lastReport.getPhoto().isEmpty()) {
-//                telegramBotService.sendMessage(chatId, "Пожалуйста, приложите фото к вашему отчету.");
-//            }
-//        }
-//        if (lastReport.getDateTime().equals(newReport.getDateTime()) && lastReport.getPhoto().isEmpty() && !newReport.getPhoto().isEmpty()) {
-//            lastReport.setPhoto(newReport.getPhoto());
-//            telegramBotService.sendMessage(chatId, "Фото добавлено в ваш сегодняшний отчет!");
-//            if (lastReport.getText().isEmpty()) {
-//                telegramBotService.sendMessage(chatId, "Пожалуйста, добавьте текст к вашему отчету.");
-//            }
-//        }
-//        if (lastReport.getDateTime().equals(newReport.getDateTime()) && !lastReport.getText().isEmpty() && !newReport.getText().isEmpty() && !newReport.getPhoto().isEmpty()) {
-//            telegramBotService.sendMessage(chatId, "Вы уже добавили текст к вашему сегодняшнему отчету.");
-//            if (lastReport.getPhoto().isEmpty()) {
-//                telegramBotService.sendMessage(chatId, "Пожалуйста, приложите фото к вашему отчету.");
-//            }
-//        }
-//        if (lastReport.getDateTime().equals(newReport.getDateTime()) && lastReport.getPhoto().isEmpty() && newReport.getPhoto().isEmpty()) {
-//            telegramBotService.sendMessage(chatId, "Вы уже добавили фото к вашему сегодняшнему отчету.");
-//            if (lastReport.getText().isEmpty()) {
-//                telegramBotService.sendMessage(chatId, "Пожалуйста, добавьте текст к вашему отчету.");
-//            }
 
-
-//    }
 
     /**
      * get all saving reports from all users

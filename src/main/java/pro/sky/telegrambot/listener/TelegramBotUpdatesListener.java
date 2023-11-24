@@ -21,6 +21,7 @@ import pro.sky.telegrambot.service.UserChatService;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -92,10 +93,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             if (update.message() != null && (message.text() != null || message.photo() != null)) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
-                if (text.equals(Commands.START.getCommandText())){
+                if (Commands.START.getCommandText().equals(text)) {
                     userChatService.setStartState(chatId);
                 }
-                if (text.equals(Commands.BACK.getCommandText())){
+                if (Commands.BACK.getCommandText().equals(text)) {
                     back.goBack(chatId, text);
                 }
                 BotState currentState = userChatService.getUserChatStatus(chatId);
@@ -118,26 +119,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         break;
                     case REPORT:
                         petReportService.report(text, message.photo(), chatId);
-//                    case REPORT:
-//                        break;
                     case HELP:
                         break;
-/*                    case WAITING_FOR_DIET:
-                        petReportService.saveDiet(text, chatId);
-                        break;*/
-                    /*case REPORT_PHOTO:
-                        petReportService.reportPhoto(message.photo(), chatId);
-                        break;
-                    case REPORT_TEXT:
-                        petReportService.reportText(text, chatId);
-                        break;*/
-    /*                case HELP:
-                    case WAITING_FOR_WELL_BEING:
-                        petReportService.saveWellBeing(text, chatId);
-                        break;
-                    case WAITING_FOR_CHANGE_IN_BEHAVIOR:
-                        petReportService.saveChangeInBehavior(text, chatId);
-                        break;*/
                     default:
                         telegramBotService.sendMessage(
                                 chatId,
