@@ -94,8 +94,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (text.equals(Commands.START.getCommandText())){
                     userChatService.setStartState(chatId);
                 }
-                if (text.equals(Commands.BACK.toString())){
-                    back.goBack(chatId);
+                if (text.equals(Commands.BACK.getCommandText())){
+                    back.goBack(chatId, text);
                 }
                 BotState currentState = userChatService.getUserChatStatus(chatId);
                 LOGGER.info(currentState.toString());

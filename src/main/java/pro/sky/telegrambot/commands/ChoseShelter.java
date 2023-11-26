@@ -40,10 +40,14 @@ public class ChoseShelter {
      * @param chatId
      */
     public void acceptChoseShelterCommand(String text, long chatId){
-        if(text.equals("/dog") || text.equals("/cat")){
+        if(text.equals(Commands.DOG.getCommandText()) || text.equals(Commands.CAT.getCommandText())){
             if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER)){
                 shelterType(text, chatId);
             }
+        } else {
+            telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                    "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                    "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
         }
     }
 

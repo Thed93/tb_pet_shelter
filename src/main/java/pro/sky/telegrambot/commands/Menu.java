@@ -41,22 +41,45 @@ public class Menu {
      * @param chatId
      */
     public void acceptInfoCommands(String text, Long chatId) {
+        Commands currentCommand = Commands.valueOf(toConstantStyle(text.substring(1)));
+        switch (currentCommand){
+            case INFORMATION:
+                userChatService.setInfo(chatId);
+                infoMenu(chatId);
+                break;
+            case ADOPTION:
+                userChatService.setAdoption(chatId);
+                adoptionMenu(chatId);
+                break;
+            case REPORT:
+                userChatService.setReport(chatId);
+                reportMenu(text, chatId);
+                petReportService.createPetReport(chatId);
+                break;
+            case  VOLUNTEER:
+                userChatService.setVolunteer(chatId);
+                volunteer(chatId);
+                break;
+            case BACK:
+                break;
+            default:
+                telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                        "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                        "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
+                break;
+        }
+
         if (text.equals(Commands.INFORMATION.getCommandText())) {
-            userChatService.setInfo(chatId);
-            infoMenu(chatId);
+
         }
         if (text.equals(Commands.ADOPTION.getCommandText())) {
-            userChatService.setAdoption(chatId);
-            adoptionMenu(chatId);
+
         }
         if (text.equals(Commands.REPORT.getCommandText())) {
-            userChatService.setReport(chatId);
-            reportMenu(text, chatId);
-            petReportService.createPetReport(chatId);
+
         }
         if (text.equals(Commands.VOLUNTEER.getCommandText())) {
-            userChatService.setVolunteer(chatId);
-            volunteer(chatId);
+
         }
     }
 
@@ -98,11 +121,20 @@ public class Menu {
     /**
      * method, if user send {@code "/volunteer" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
+     * use method
      *
      * @param chatId
      */
     private void volunteer(long chatId){
         handlers.volunteer(chatId);
+    }
+
+    private final String toConstantStyle(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) >= 65 && string.charAt(i) <= 90) {
+                return (string.substring(0, i) + '_' + string.substring(i)).toUpperCase();
+            }
+        }
+        return string.toUpperCase();
     }
 }
