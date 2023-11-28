@@ -3,6 +3,7 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
 import pro.sky.telegrambot.enums.BotState;
+import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.repository.UserChatRepository;
 import pro.sky.telegrambot.service.HelpService;
@@ -19,7 +21,6 @@ import pro.sky.telegrambot.service.UserChatService;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -46,13 +47,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final HelpService helpService;
 
+    private final Back back;
+
     private final UserChatService userChatService;
 
     private final TelegramBotService telegramBotService;
 
     private final Handlers handlers;
 
-    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
+    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, Back back, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
         this.start = start;
         this.menu = menu;
         this.adoption = adoption;
@@ -61,6 +64,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.userChatRepository = userChatRepository;
         this.petReportService = petReportService;
         this.helpService = helpService;
+        this.back = back;
         this.userChatService = userChatService;
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
@@ -88,6 +92,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             if (update.message() != null && (message.text() != null || message.photo() != null)) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);
+                if (text.equals(Commands.START.getCommandText())){
+                    userChatService.setStartState(chatId);
+                }
+                if (text.equals(Commands.BACK.getCommandText())){
+                    back.goBack(chatId, text);
+                }
                 BotState currentState = userChatService.getUserChatStatus(chatId);
                 LOGGER.info(currentState.toString());
                 switch (currentState) {
@@ -108,15 +118,26 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         break;
                     case REPORT:
                         petReportService.report(text, message.photo(), chatId);
+//                    case REPORT:
+//                        break;
+                    case HELP:
                         break;
+/*                    case WAITING_FOR_DIET:
+                        petReportService.saveDiet(text, chatId);
+                        break;*/
                     /*case REPORT_PHOTO:
                         petReportService.reportPhoto(message.photo(), chatId);
                         break;
                     case REPORT_TEXT:
                         petReportService.reportText(text, chatId);
                         break;*/
-                    case HELP:
+    /*                case HELP:
+                    case WAITING_FOR_WELL_BEING:
+                        petReportService.saveWellBeing(text, chatId);
                         break;
+                    case WAITING_FOR_CHANGE_IN_BEHAVIOR:
+                        petReportService.saveChangeInBehavior(text, chatId);
+                        break;*/
                     default:
                         telegramBotService.sendMessage(
                                 chatId,

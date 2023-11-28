@@ -29,8 +29,6 @@ public class Adoption {
     private static final Logger LOG = LoggerFactory.getLogger(Adoption.class);
     private final Handlers handlers;
 
-    private Commands commands;
-
     private final UserChatService userChatService;
 
     /**
@@ -57,7 +55,7 @@ public class Adoption {
         LOG.info(currentCommand.toString());
 
         switch (currentCommand){
-            case CAT:
+            case WELCOME_RULES:
                 welcomeRules(chatId);
                 break;
             case DOCS:
@@ -86,6 +84,13 @@ public class Adoption {
                 break;
             case VOLUNTEER:
                 volunteer(chatId);
+                break;
+            case BACK:
+                break;
+            default:
+                telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                        "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                        "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
                 break;
         }
     }

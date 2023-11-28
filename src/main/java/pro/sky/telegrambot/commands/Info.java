@@ -61,8 +61,13 @@ public class Info {
             case HELP:
                 help(chatId);
                 break;
-            default:
+            case BACK:
                 break;
+            default:
+                telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                        "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                        "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());;
+                        break;
         }
     }
 

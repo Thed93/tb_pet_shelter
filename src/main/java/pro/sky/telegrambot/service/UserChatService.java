@@ -115,6 +115,34 @@ public class UserChatService {
         userChatRepository.save(userChat);
     }
 
+    @Transactional
+    public void setWaitingForDietState(long chatId) {
+        UserChat userChat = findById(chatId);
+        userChat.setBotState(BotState.WAITING_FOR_DIET.toString());
+        userChatRepository.save(userChat);
+    }
+
+    @Transactional
+    public void setWaitingForWellBeingState(long chatId) {
+        UserChat userChat = findById(chatId);
+        userChat.setBotState(BotState.WAITING_FOR_WELL_BEING.toString());
+        userChatRepository.save(userChat);
+    }
+
+    @Transactional
+    public void setChangeInBehaviorState(long chatId) {
+        UserChat userChat = findById(chatId);
+        userChat.setBotState(BotState.WAITING_FOR_CHANGE_IN_BEHAVIOR.toString());
+        userChatRepository.save(userChat);
+    }
+
+    @Transactional
+    public void setStartState(long chatId) {
+        UserChat userChat = findById(chatId);
+        userChat.setBotState(BotState.START.toString());
+        userChatRepository.save(userChat);
+    }
+
     public UserChat findById(Long id) {
         return userChatRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
@@ -144,4 +172,7 @@ public class UserChatService {
         UserChat userChat = findById(chatId);
         return userChat.getCurrentChosenShelter();
     }
+
+
+
 }

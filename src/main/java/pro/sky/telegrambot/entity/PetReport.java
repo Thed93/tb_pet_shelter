@@ -1,9 +1,8 @@
 package pro.sky.telegrambot.entity;
 
-import com.pengrad.telegrambot.model.PhotoSize;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -43,21 +42,28 @@ public class PetReport {
      * user's report
      */
     @Column(length = 2000, nullable = true)
-    private String text;
+    private String diet;
 
-/*    *//**
+    @Column(name = "well_being", length = 2000, nullable = true)
+    private String wellBeing;
+
+    @Column(name = "change_in_behavior", length = 2000, nullable = true)
+    private String changeInBehavior;
+
+    /**
      * number of report, that this user send
      *//*
     @Column(name = "report_number", nullable = false)
     private int reportNumber;*/
-
     private String status;
 
-    public PetReport(UserChat user, LocalDateTime dateTime, String photoPath, String text, String status) {
+    public PetReport(UserChat user, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {
         this.user = user;
         this.dateTime = dateTime;
         this.photoPath = photoPath;
-        this.text = text;
+        this.diet = diet;
+        this.wellBeing = wellBeing;
+        this.changeInBehavior = changeInBehavior;
         this.status = status;
     }
 
@@ -88,12 +94,12 @@ public class PetReport {
         this.photoPath = photoPath;
     }
 
-    public String getText() {
+/*    public String getText() {
         return text;
-    }
+    }*/
 
-    public void setText(String text) {
-        this.text = text;
+    public void setChangeInBehavior(String changeInBehavior) {
+        this.changeInBehavior = changeInBehavior;
     }
 
 /*    public int getReportNumber() {

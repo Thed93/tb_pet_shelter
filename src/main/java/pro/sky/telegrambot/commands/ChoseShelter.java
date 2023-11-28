@@ -39,10 +39,14 @@ public class ChoseShelter {
      * @param chatId
      */
     public void acceptChoseShelterCommand(String text, long chatId){
-        if(text.equals(ShelterType.DOG_SHELTER.toString()) || text.equals(ShelterType.CAT_SHELTER.toString())){
+        if(text.equals(Commands.DOG.getCommandText()) || text.equals(Commands.CAT.getCommandText())){
             if (userChatService.getUserChatStatus(chatId).equals(BotState.CHOOSE_SHELTER)){
                 shelterType(text, chatId);
             }
+        } else {
+            telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                    "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                    "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
         }
     }
 
@@ -58,11 +62,11 @@ public class ChoseShelter {
      */
 
     private void shelterType(String text, long chatId) {
-        if (text.equals(ShelterType.DOG_SHELTER.toString())) {
+        if (text.equals(Commands.DOG.getCommandText())) {
             userChatService.setMenu(chatId);
             userChatService.setDog(chatId);
             handlers.handleShelterConsultation(chatId, text);
-        } else if (text.equals(ShelterType.CAT_SHELTER.toString())) {
+        } else if (text.equals(Commands.CAT.getCommandText())) {
             userChatService.setMenu(chatId);
             userChatService.setCat(chatId);
             handlers.handleShelterConsultation(chatId, text);

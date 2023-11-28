@@ -26,7 +26,13 @@
             <column name="photo_path" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="text" type="VARCHAR(2000)">
+            <column name="diet" type="VARCHAR(2000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="well_being" type="VARCHAR(2000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="change_in_behavior" type="VARCHAR(2000)">
                 <constraints nullable="true"/>
             </column>
             <column name="status" type="VARCHAR(255)">

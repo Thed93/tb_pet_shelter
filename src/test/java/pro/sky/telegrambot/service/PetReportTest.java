@@ -32,7 +32,7 @@ public class PetReportTest {
 
     final UserChat user = new UserChat(123L, "Jack", "Sparrow", null, false, null);
 
-    final PetReport petReport = new PetReport(user, LocalDateTime.now(), null, "All right");
+    final PetReport petReport = new PetReport(user, LocalDateTime.now(), null, "All right", "All right", "All right", 1);
 
     final List<PetReport> petReports = new ArrayList<>();
     @Test
