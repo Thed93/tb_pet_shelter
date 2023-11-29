@@ -1,8 +1,11 @@
 package pro.sky.telegrambot.handle;
 
 import org.springframework.stereotype.Component;
+import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.enums.ShelterType;
+
+import java.util.List;
 
 
 /**
@@ -192,4 +195,12 @@ public class HandlerText {
 
     public String reportAcceptedText() { return "Спасибо за ежедневный отчет о питомце!"; }
 
+    public String choicePetText(List<Pet> pets) {
+        StringBuilder text = new StringBuilder();
+        text.append("Напишите номер животного, для которого хотите составить отчет\n\n");
+        for (int i = 0; i < pets.size(); i++) {
+            text.append(String.format("%d. %s (%s)\n", i + 1, pets.get(i).getName(), pets.get(i).getKindOfPet()));
+        }
+        return text.toString();
+    }
 }

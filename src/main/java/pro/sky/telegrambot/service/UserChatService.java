@@ -116,6 +116,13 @@ public class UserChatService {
     }
 
     @Transactional
+    public void setChoosePet(long chatId){
+        UserChat userChat = findById(chatId);
+        userChat.setBotState(BotState.CHOOSE_PET.toString());
+        userChatRepository.save(userChat);
+    }
+
+    @Transactional
     public void setWaitingForDietState(long chatId) {
         UserChat userChat = findById(chatId);
         userChat.setBotState(BotState.WAITING_FOR_DIET.toString());

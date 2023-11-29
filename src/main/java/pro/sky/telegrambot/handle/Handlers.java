@@ -3,10 +3,13 @@ package pro.sky.telegrambot.handle;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.AppealToVolunteer;
+import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.service.AppealToVolunteerService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
+
+import java.util.List;
 
 /**
  * service of methods, which will be chosen depending on user's message
@@ -141,4 +144,7 @@ public class Handlers {
         telegramBotService.sendMessage(chatId, handlerText.reportAcceptedText());
     }
 
+    public void choicePet(Long chatId, List<Pet> pets) {
+        telegramBotService.sendMessage(chatId, handlerText.choicePetText(pets));
+    }
 }

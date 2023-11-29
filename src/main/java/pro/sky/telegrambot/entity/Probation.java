@@ -1,14 +1,14 @@
 package pro.sky.telegrambot.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Probation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -18,7 +18,11 @@ public class Probation {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    private LocalDate probationEndDate;
+    @Column(name = "probation_end_date")
+    private LocalDateTime probationEndDate;
+
+    @Column(name = "last_report_date")
+    private LocalDateTime lastReportDate;
 
     public Long getId() {
         return id;
@@ -40,11 +44,19 @@ public class Probation {
         this.pet = pet;
     }
 
-    public LocalDate getProbationEndDate() {
+    public LocalDateTime getProbationEndDate() {
         return probationEndDate;
     }
 
-    public void setProbationEndDate(LocalDate probationEndDate) {
+    public void setProbationEndDate(LocalDateTime probationEndDate) {
         this.probationEndDate = probationEndDate;
+    }
+
+    public LocalDateTime getLastReportDate() {
+        return lastReportDate;
+    }
+
+    public void setLastReportDate(LocalDateTime lastReportDate) {
+        this.lastReportDate = lastReportDate;
     }
 }
