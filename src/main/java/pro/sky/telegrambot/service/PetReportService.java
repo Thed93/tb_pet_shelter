@@ -11,7 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.commands.ChoseShelter;
+import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.entity.PetReport;
+import pro.sky.telegrambot.entity.Probation;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -23,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -49,6 +53,8 @@ public class PetReportService {
      * copy of Telegram - bot for sending message
      */
     private final TelegramBotService telegramBotService;
+    private final ProbationService probationService;
+    private final PetService petService;
     private final ChoseShelter choseShelter;
     private final String photoDir;
 
@@ -56,47 +62,81 @@ public class PetReportService {
     public PetReportService(PetReportRepository petReportRepository,
                             UserChatService userChatService,
                             TelegramBot telegramBot, Handlers handlers, TelegramBotService telegramBotService,
-                            ChoseShelter choseShelter, @Value("${path.to.report.photos.folder}") String photoDir) {
+                            ProbationService probationService, PetService petService, ChoseShelter choseShelter, @Value("${path.to.report.photos.folder}") String photoDir) {
         this.petReportRepository = petReportRepository;
         this.userChatService = userChatService;
         this.telegramBot = telegramBot;
         this.handlers = handlers;
         this.telegramBotService = telegramBotService;
+        this.probationService = probationService;
+        this.petService = petService;
         this.choseShelter = choseShelter;
         this.photoDir = photoDir;
     }
 
-    public void report(String text, PhotoSize[] photoSizes, Long chatId) {
-        UserChat userChat = userChatService.findById(chatId);
-        PetReport petReport = petReportRepository.findPetReportByUserAndStatus(userChat, "IN_PROGRESS");
+    public void choicePet(Long chatId) {
+        List<Pet> pets = probationService.getProbationByUserId(chatId).stream()
+                .map(Probation::getPet)
+                .sorted()
+                .collect(Collectors.toList());
 
-        if (petReport == null) {
-            petReport = new PetReport();
-            newReport(petReport, chatId);
-        } else {
-            if (petReport.getPhotoPath() == null) {
-                reportPhoto(userChat, petReport, photoSizes);
-            } else if (petReport.getDiet() == null) {
-                reportDiet(userChat, petReport, text);
-            } else if (petReport.getWellBeing() == null) {
-                reportWellBeing(userChat, petReport, text);
-            } else if (petReport.getChangeInBehavior() == null) {
-                reportChangeInBehavior(userChat, petReport, text);
+        if (pets.size() > 0) {
+            StringBuilder text = new StringBuilder();
+
+            text.append("Напишите номер животного, для которого хотите составить отчет\n\n");
+            for (int i = 0; i < pets.size(); i++) {
+                text.append(String.format("%d. %s (%s)\n", i + 1, pets.get(i).getName(), pets.get(i).getKindOfPet()));
             }
+            telegramBotService.sendMessage(chatId, text.toString());
+            userChatService.setUserChatStatus(chatId, BotState.CHOOSE_PET);
+        } else {
+            telegramBotService.sendMessage(chatId, "У вас нет животных, по которым нужен отчет");
+            userChatService.setChoseShelter(chatId);
+            choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
         }
     }
 
-    public void report(Long chatId) {
-        report(null, null, chatId);
+    public void createReport(String text, Long chatId) {
+        List<Pet> pets = probationService.getProbationByUserId(chatId).stream()
+                .map(Probation::getPet)
+                .sorted()
+                .collect(Collectors.toList());
+        Pet pet = pets.get(Integer.parseInt(text) - 1);
+        PetReport petReport = petReportRepository.findPetReportByPetAndStatus(pet, "IN_PROGRESS");
+
+        if (petReport == null) {
+            petReport = new PetReport();
+            newReport(petReport, pet, chatId);
+        }
     }
 
-    private void newReport(PetReport petReport, Long chatId) {
+    public void complementReport(String text, PhotoSize[] photoSizes, Long chatId) {
+        UserChat userChat = userChatService.findById(chatId);
+        PetReport petReport = petReportRepository.findPetReportByUserChatAndStatus(userChat, "IN_PROGRESS");
+
+        if (petReport.getPhotoPath() == null) {
+            reportPhoto(userChat, petReport, photoSizes);
+        } else if (petReport.getDiet() == null) {
+            reportDiet(userChat, petReport, text);
+        } else if (petReport.getWellBeing() == null) {
+            reportWellBeing(userChat, petReport, text);
+        } else if (petReport.getChangeInBehavior() == null) {
+            reportChangeInBehavior(userChat, petReport, text);
+        }
+    }
+
+/*    public void report(Long chatId) {
+        report(null, null, chatId);
+    }*/
+
+    private void newReport(PetReport petReport, Pet pet, Long chatId) {
         UserChat user = userChatService.findById(chatId);
-        petReport.setUser(user);
+        petReport.setPet(pet);
+        petReport.setUserChat(user);
         petReport.setDateTime(LocalDateTime.now());
         petReport.setStatus("IN_PROGRESS");
         petReportRepository.save(petReport);
-        userChatService.setUserChatStatus(chatId, BotState.REPORT);
+        userChatService.setReport(chatId);
         handlers.reportMenu(chatId);
     }
 
@@ -150,10 +190,22 @@ public class PetReportService {
         petReport.setChangeInBehavior(text);
         petReport.setStatus("FULL_INFO");
         petReportRepository.save(petReport);
-        userChatService.setUserChatStatus(chatId, BotState.CHOOSE_SHELTER);
+        userChatService.setChoseShelter(chatId);
         handlers.reportAccepted(userChat.getUserId());
         choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
     }
+
+    /**
+     * get all saving reports from all users
+     * <br>
+     * use repository method {@link JpaRepository#findAll()}
+     *
+     * @return all saving reports
+     */
+    public Collection<PetReport> getAllReports() {
+        return petReportRepository.findAll();
+    }
+
 
     /**
      *
@@ -168,17 +220,6 @@ public class PetReportService {
      * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
      */
 
-
-    /**
-     * get all saving reports from all users
-     * <br>
-     * use repository method {@link JpaRepository#findAll()}
-     *
-     * @return all saving reports
-     */
-    public Collection<PetReport> getAllReports() {
-        return petReportRepository.findAll();
-    }
 
     /**
      *

@@ -19,4 +19,32 @@ public class Probation {
     private Pet pet;
 
     private LocalDate probationEndDate;
+
+    public Long getId() {
+        return id;
+    }
+
+    public UserChat getUserChat() {
+        return userChat;
+    }
+
+    public void setUserChat(UserChat userChat) {
+        this.userChat = userChat;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+    public LocalDate getProbationEndDate() {
+        return probationEndDate;
+    }
+
+    public void setProbationEndDate(LocalDate probationEndDate) {
+        this.probationEndDate = probationEndDate;
+    }
 }

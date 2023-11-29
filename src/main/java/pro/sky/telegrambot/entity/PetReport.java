@@ -23,8 +23,12 @@ public class PetReport {
      * user associated with this appeal
      */
     @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserChat user;
+    private UserChat userChat;
 
     /**
      * date, when user send report
@@ -57,8 +61,10 @@ public class PetReport {
     private int reportNumber;*/
     private String status;
 
-    public PetReport(UserChat user, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {
-        this.user = user;
+    public PetReport(Long id, Pet pet, UserChat userChat, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {
+        this.id = id;
+        this.pet = pet;
+        this.userChat = userChat;
         this.dateTime = dateTime;
         this.photoPath = photoPath;
         this.diet = diet;
@@ -70,12 +76,20 @@ public class PetReport {
     public PetReport() {
     }
 
-    public UserChat getUser() {
-        return user;
+    public Pet getPet() {
+        return pet;
     }
 
-    public void setUser(UserChat user) {
-        this.user = user;
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+    public UserChat getUserChat() {
+        return userChat;
+    }
+
+    public void setUserChat(UserChat userChat) {
+        this.userChat = userChat;
     }
 
     public LocalDateTime getDateTime() {

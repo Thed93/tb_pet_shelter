@@ -54,7 +54,8 @@ public class Menu {
             case REPORT:
 /*                userChatService.setReport(chatId);
                 reportMenu(text, chatId);*/
-                petReportService.report(chatId);
+                //petReportService.report(chatId);
+                petReportService.choicePet(chatId);
                 break;
             case VOLUNTEER:
                 userChatService.setVolunteer(chatId);

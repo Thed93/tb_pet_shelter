@@ -3,11 +3,10 @@ package pro.sky.telegrambot.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,11 +21,13 @@ public interface PetReportRepository extends JpaRepository<PetReport, Long> {
      * @param Surname
      * @return
      */
-    List<PetReport> findReportsByUserNameAndUserSurname(String Name, String Surname);
+    //List<PetReport> findReportsByUserNameAndUserSurname(String Name, String Surname);
 
     @Query(value = "SELECT * FROM pet_report WHERE user_id = :userId ORDER BY id DESC LIMIT 1", nativeQuery = true)
     Optional<PetReport> findLastPetReportByUserId(@Param("userId") Long userId);
 
 
-    PetReport findPetReportByUserAndStatus(UserChat user, String status);
+    PetReport findPetReportByPetAndStatus(Pet pet, String status);
+
+    PetReport findPetReportByUserChatAndStatus(UserChat userChat, String status);
 }

@@ -3,7 +3,6 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,8 +116,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     case ADOPTION:
                         adoption.adoptionMenu(text, chatId);
                         break;
+                    case CHOOSE_PET:
+                        petReportService.createReport(text, chatId);
                     case REPORT:
-                        petReportService.report(text, message.photo(), chatId);
+                        petReportService.complementReport(text, message.photo(), chatId);
                     case HELP:
                         break;
                     default:
