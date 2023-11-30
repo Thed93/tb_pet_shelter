@@ -21,7 +21,6 @@ public class Timer {
         this.telegramBotService = telegramBotService;
     }
 
-
     @Scheduled(cron = "00 00 20 * * *")
     public void checkLastPetReport() {
         List<Probation> probation = probationRepository.findAll();

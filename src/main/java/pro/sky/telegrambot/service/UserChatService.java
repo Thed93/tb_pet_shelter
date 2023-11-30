@@ -158,6 +158,4 @@ public class UserChatService {
         return userChat.getCurrentChosenShelter();
     }
 
-
-
 }

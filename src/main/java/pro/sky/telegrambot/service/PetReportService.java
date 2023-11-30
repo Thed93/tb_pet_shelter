@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.commands.ChoseShelter;
@@ -24,7 +23,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +64,7 @@ public class PetReportService {
 
     /**
      * method for asking the user for which pet he wants to send a report to
+     *
      * @param chatId
      */
     public void choicePet(Long chatId) {
@@ -86,6 +85,7 @@ public class PetReportService {
 
     /**
      * method which creates empty report for a pet that the user has selected
+     *
      * @param text
      * @param chatId
      */
@@ -107,6 +107,7 @@ public class PetReportService {
 
     /**
      * method which calls other methods to fill out the report
+     *
      * @param text
      * @param photoSizes
      * @param chatId
@@ -129,6 +130,7 @@ public class PetReportService {
 
     /**
      * method which accepts an empty report and fills it with initial data
+     *
      * @param petReport
      * @param pet
      * @param chatId
@@ -144,6 +146,13 @@ public class PetReportService {
         handlers.reportMenu(chatId);
     }
 
+    /**
+     * method which takes an array of photos and calls a method to save one photo
+     *
+     * @param userChat
+     * @param petReport
+     * @param photoSizes
+     */
     public void reportPhoto(UserChat userChat, PetReport petReport, PhotoSize[] photoSizes) {
         if (photoSizes != null) {
             PhotoSize photoSize = photoSizes[photoSizes.length - 1];
@@ -160,6 +169,15 @@ public class PetReportService {
         }
     }
 
+    /**
+     * method which saves photo in the file system
+     *
+     * @param chatId
+     * @param petReport
+     * @param data
+     * @param extension
+     * @throws IOException
+     */
     private void savePhoto(Long chatId, PetReport petReport, byte[] data, String extension) throws IOException {
         Path filePath = Path.of(photoDir, petReport.hashCode() + "." + extension);
         Files.createDirectories(filePath.getParent());
@@ -177,18 +195,39 @@ public class PetReportService {
         }
     }
 
+    /**
+     * method which saves the pet's diet in the report
+     *
+     * @param userChat
+     * @param petReport
+     * @param text
+     */
     public void reportDiet(UserChat userChat, PetReport petReport, String text) {
         petReport.setDiet(text);
         petReportRepository.save(petReport);
         handlers.waitingForWellBeing(userChat.getUserId());
     }
 
+    /**
+     * method which saves the pet's well-being in the report
+     *
+     * @param userChat
+     * @param petReport
+     * @param text
+     */
     private void reportWellBeing(UserChat userChat, PetReport petReport, String text) {
         petReport.setWellBeing(text);
         petReportRepository.save(petReport);
         handlers.waitingForChangeInBehavior(userChat.getUserId());
     }
 
+    /**
+     * method which saves the pet's change in behavior in the report
+     *
+     * @param userChat
+     * @param petReport
+     * @param text
+     */
     private void reportChangeInBehavior(UserChat userChat, PetReport petReport, String text) {
         Long chatId = userChat.getUserId();
         petReport.setChangeInBehavior(text);
@@ -199,41 +238,4 @@ public class PetReportService {
         handlers.reportAccepted(userChat.getUserId());
         choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
     }
-
-    /**
-     * get all saving reports from all users
-     * <br>
-     * use repository method {@link JpaRepository#findAll()}
-     *
-     * @return all saving reports
-     */
-    public Collection<PetReport> getAllReports() {
-        return petReportRepository.findAll();
-    }
-
-
-    /**
-     *
-     * save the report of the person who adopted the pet from the shelter
-     * <br>
-     * use repository methods:
-     * <br>
-     * {@link pro.sky.telegrambot.repository.PetReportRepository#findReportsByUserNameAndUserSurname(String, String)}
-     * <br>
-     * {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
-     *
-     * @param petReport building in {@link pro.sky.telegrambot.listener.TelegramBotUpdatesListener}
-     */
-
-
-    /**
-     *
-     * get all saving reports from person, which we found by name and surname
-     * <br>
-     * use repository method {@link pro.sky.telegrambot.repository.PetReportRepository#findReportsByUserNameAndUserSurname(String, String)}
-     *
-     * @return all saving reports from chosen person
-     */
-
-
 }
