@@ -2,17 +2,30 @@ package pro.sky.telegrambot.entity;
 
 import javax.persistence.*;
 
+
+/**
+ * class with pet and its owner after the end of the probation
+ */
 @Entity
 public class Adopted {
 
+    /**
+     * id of adopted
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * user who owns the animal
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserChat userChat;
 
+    /**
+     * pet owned by the user
+     */
     @OneToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;

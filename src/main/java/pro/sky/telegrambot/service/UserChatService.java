@@ -12,7 +12,6 @@ import pro.sky.telegrambot.exception.UserNotFoundException;
 import pro.sky.telegrambot.repository.UserChatRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * service for processing commands
@@ -119,27 +118,6 @@ public class UserChatService {
     public void setChoosePet(long chatId){
         UserChat userChat = findById(chatId);
         userChat.setBotState(BotState.CHOOSE_PET.toString());
-        userChatRepository.save(userChat);
-    }
-
-    @Transactional
-    public void setWaitingForDietState(long chatId) {
-        UserChat userChat = findById(chatId);
-        userChat.setBotState(BotState.WAITING_FOR_DIET.toString());
-        userChatRepository.save(userChat);
-    }
-
-    @Transactional
-    public void setWaitingForWellBeingState(long chatId) {
-        UserChat userChat = findById(chatId);
-        userChat.setBotState(BotState.WAITING_FOR_WELL_BEING.toString());
-        userChatRepository.save(userChat);
-    }
-
-    @Transactional
-    public void setChangeInBehaviorState(long chatId) {
-        UserChat userChat = findById(chatId);
-        userChat.setBotState(BotState.WAITING_FOR_CHANGE_IN_BEHAVIOR.toString());
         userChatRepository.save(userChat);
     }
 

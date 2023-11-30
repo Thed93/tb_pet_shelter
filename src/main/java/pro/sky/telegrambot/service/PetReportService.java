@@ -31,27 +31,16 @@ import java.util.stream.Collectors;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 /**
- * service for processing commands
+ * service for working with reports on pets
  */
 @Service
 public class PetReportService {
 
-    /**
-     * class for adding message to programmer
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(PetReportService.class);
-
-    /**
-     * repository for data access
-     */
     private final PetReportRepository petReportRepository;
     private final UserChatService userChatService;
     private final TelegramBot telegramBot;
     private final Handlers handlers;
-
-    /**
-     * copy of Telegram - bot for sending message
-     */
     private final TelegramBotService telegramBotService;
     private final ProbationService probationService;
     private final ChoseShelter choseShelter;
@@ -75,6 +64,10 @@ public class PetReportService {
         this.photoDir = photoDir;
     }
 
+    /**
+     * method for asking the user for which pet he wants to send a report to
+     * @param chatId
+     */
     public void choicePet(Long chatId) {
         List<Pet> pets = probationService.getProbationByUserId(chatId).stream()
                 .map(Probation::getPet)
@@ -91,6 +84,11 @@ public class PetReportService {
         }
     }
 
+    /**
+     * method which creates empty report for a pet that the user has selected
+     * @param text
+     * @param chatId
+     */
     public void createReport(String text, Long chatId) {
         List<Pet> pets = probationService.getProbationByUserId(chatId).stream()
                 .map(Probation::getPet)
@@ -107,6 +105,13 @@ public class PetReportService {
         }
     }
 
+    /**
+     * method which calls other methods to fill out the report
+     * @param text
+     * @param photoSizes
+     * @param chatId
+     */
+
     public void complementReport(String text, PhotoSize[] photoSizes, Long chatId) {
         UserChat userChat = userChatService.findById(chatId);
         PetReport petReport = petReportRepository.findPetReportByUserChatAndStatus(userChat, PetReportState.IN_PROGRESS.name());
@@ -122,6 +127,12 @@ public class PetReportService {
         }
     }
 
+    /**
+     * method which accepts an empty report and fills it with initial data
+     * @param petReport
+     * @param pet
+     * @param chatId
+     */
     private void newReport(PetReport petReport, Pet pet, Long chatId) {
         UserChat user = userChatService.findById(chatId);
         petReport.setPet(pet);
@@ -157,7 +168,7 @@ public class PetReportService {
                 InputStream is = new ByteArrayInputStream(data);
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
             petReport.setPhotoPath(filePath.toString());
@@ -181,7 +192,7 @@ public class PetReportService {
     private void reportChangeInBehavior(UserChat userChat, PetReport petReport, String text) {
         Long chatId = userChat.getUserId();
         petReport.setChangeInBehavior(text);
-        petReport.setStatus(PetReportState.Full_INFO.name());
+        petReport.setStatus(PetReportState.FUll_INFO.name());
         petReportRepository.save(petReport);
         probationService.setLastReportDate(petReport.getPet(), LocalDateTime.now());
         userChatService.setChoseShelter(chatId);

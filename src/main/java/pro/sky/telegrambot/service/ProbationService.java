@@ -2,7 +2,6 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.Pet;
-import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.Probation;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.ProbationRepository;

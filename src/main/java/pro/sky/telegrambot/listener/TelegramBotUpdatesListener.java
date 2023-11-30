@@ -11,16 +11,11 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.commands.*;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
-import pro.sky.telegrambot.handle.Handlers;
-import pro.sky.telegrambot.repository.UserChatRepository;
-import pro.sky.telegrambot.service.HelpService;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -41,11 +36,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final ChoseShelter choseShelter;
 
-    private final UserChatRepository userChatRepository;
-
     private final PetReportService petReportService;
-
-    private final HelpService helpService;
 
     private final Back back;
 
@@ -53,26 +44,27 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final TelegramBotService telegramBotService;
 
-    private final Handlers handlers;
-
-    public TelegramBotUpdatesListener(Start start, Menu menu, Adoption adoption, Info info, ChoseShelter choseShelter, UserChatRepository userChatRepository, PetReportService petReportService, HelpService helpService, Back back, UserChatService userChatService, TelegramBotService telegramBotService, Handlers handlers, TelegramBot telegramBot) {
+    public TelegramBotUpdatesListener(Start start,
+                                      Menu menu, Adoption adoption,
+                                      Info info, ChoseShelter choseShelter,
+                                      PetReportService petReportService, Back back,
+                                      UserChatService userChatService,
+                                      TelegramBotService telegramBotService,
+                                      TelegramBot telegramBot) {
         this.start = start;
         this.menu = menu;
         this.adoption = adoption;
         this.info = info;
         this.choseShelter = choseShelter;
-        this.userChatRepository = userChatRepository;
         this.petReportService = petReportService;
-        this.helpService = helpService;
         this.back = back;
         this.userChatService = userChatService;
         this.telegramBotService = telegramBotService;
-        this.handlers = handlers;
         this.telegramBot = telegramBot;
     }
 
     @Autowired
-    private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
 
 
     @PostConstruct
@@ -88,7 +80,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String userName = message.chat().firstName();
             String userSurname = message.chat().lastName();
             Long chatId = message.chat().id();
-            LocalDateTime dateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
             if (update.message() != null && (message.text() != null || message.photo() != null)) {
                 String text = message.text();
                 userChatService.editUserChat(chatId, userName, userSurname);

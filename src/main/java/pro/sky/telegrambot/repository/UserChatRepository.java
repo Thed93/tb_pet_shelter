@@ -11,9 +11,7 @@ import java.util.Optional;
  * repository for data access to users
  */
 public interface UserChatRepository extends JpaRepository<UserChat, Long> {
-    public  UserChat findUserByNameAndSurname(String name, String surname);
-
-//    BotState findBotStateByUserId(@Param("userId") long userId);
+    UserChat findUserByNameAndSurname(String name, String surname);
 
     Optional<UserChat> findUserChatByUserId(Long id);
 

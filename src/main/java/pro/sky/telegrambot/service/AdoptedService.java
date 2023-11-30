@@ -6,6 +6,9 @@ import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.repository.AdoptedRepository;
 
+/**
+ * service for processing adoption requests
+ */
 @Service
 public class AdoptedService {
 
@@ -15,10 +18,15 @@ public class AdoptedService {
         this.adoptedRepository = adoptedRepository;
     }
 
-    public Adopted createAdopted(UserChat userChat, Pet pet) {
+    /**
+     * create note about adoption and adds it to the database
+     * @param userChat
+     * @param pet
+     */
+    public void createAdopted(UserChat userChat, Pet pet) {
         Adopted adopted = new Adopted();
         adopted.setUserChat(userChat);
         adopted.setPet(pet);
-        return adoptedRepository.save(adopted);
+        adoptedRepository.save(adopted);
     }
 }

@@ -3,16 +3,31 @@ package pro.sky.telegrambot.entity;
 import javax.persistence.*;
 import java.util.Objects;
 
+
+/**
+ * class of pets
+ */
 @Entity
 @Table(name = "pets")
 public class Pet implements Comparable<Pet> {
 
+    /**
+     * id of pet
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * kind of animal (for example: cat, dog)
+     */
+    @Column(name = "kind_of_pet")
     private String kindOfPet;
 
+    /**
+     * name of the pet
+     */
+    @Column(name = "name")
     private String name;
 
     public Long getId() {

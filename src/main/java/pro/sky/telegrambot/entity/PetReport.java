@@ -20,12 +20,15 @@ public class PetReport {
     private Long id;
 
     /**
-     * user associated with this appeal
+     * pet associated with this appeal
      */
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    /**
+     * user who created the report
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserChat userChat;
@@ -37,28 +40,32 @@ public class PetReport {
     private LocalDateTime dateTime;
 
     /**
-     * photo, that user send
+     * path to the photo, that user send
      */
-    @Column(nullable = true)
+    @Column(name = "photo_path")
     private String photoPath;
 
     /**
-     * user's report
+     * pet diet
      */
-    @Column(length = 2000, nullable = true)
+    @Column(length = 2000)
     private String diet;
 
-    @Column(name = "well_being", length = 2000, nullable = true)
+    /**
+     * pet's well-being
+     */
+    @Column(name = "well_being", length = 2000)
     private String wellBeing;
 
-    @Column(name = "change_in_behavior", length = 2000, nullable = true)
+    /**
+     * change in pet behavior
+     */
+    @Column(name = "change_in_behavior", length = 2000)
     private String changeInBehavior;
 
     /**
-     * number of report, that this user send
-     *//*
-    @Column(name = "report_number", nullable = false)
-    private int reportNumber;*/
+     * status of the report which shows what stage it is at
+     */
     private String status;
 
     public PetReport(Long id, Pet pet, UserChat userChat, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {

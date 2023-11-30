@@ -3,24 +3,42 @@ package pro.sky.telegrambot.entity;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * class with pet and its owner on probation
+ */
 @Entity
 public class Probation {
 
+    /**
+     * id of probation
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * user who owns the animal
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserChat userChat;
 
+    /**
+     * pet owned by the user
+     */
     @OneToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    /**
+     * end date of the probationary period
+     */
     @Column(name = "probation_end_date")
     private LocalDateTime probationEndDate;
 
+    /**
+     * date of last report
+     */
     @Column(name = "last_report_date")
     private LocalDateTime lastReportDate;
 
