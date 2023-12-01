@@ -16,6 +16,7 @@ public enum BotState {
     CHOOSE_PET,
     REPORT,
     VOLUNTEER,
+    CONVERSATION_WITH_VOLUNTEER,
     HELP;
 
 }

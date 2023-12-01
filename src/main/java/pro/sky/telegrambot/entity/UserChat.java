@@ -49,6 +49,7 @@ public class UserChat {
     @Column(name = "bot_state")
     private String botState;
 
+
     public UserChat(Long userId, String name, String surname, String currentChosenShelter, boolean hasChosenShelter, String botState) {
         this.userId = userId;
         this.name = name;
@@ -64,12 +65,11 @@ public class UserChat {
         this.surname = surname;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserChat() {
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -118,9 +118,6 @@ public class UserChat {
         if (o == null || getClass() != o.getClass()) return false;
         UserChat userChat = (UserChat) o;
         return hasChosenShelter == userChat.hasChosenShelter && Objects.equals(userId, userChat.userId) && Objects.equals(name, userChat.name) && Objects.equals(surname, userChat.surname) && Objects.equals(currentChosenShelter, userChat.currentChosenShelter) && Objects.equals(botState, userChat.botState);
-    }
-
-    public UserChat() {
     }
 
     @Override

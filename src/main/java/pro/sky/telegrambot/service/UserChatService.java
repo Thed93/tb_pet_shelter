@@ -60,8 +60,6 @@ public class UserChatService {
         UserChat userChat = new UserChat(chatId, name, userName, null, false, BotState.START.toString());
         if (userChatRepository.findById(chatId).isEmpty()) {
             userChatRepository.save(userChat);
-        } else {
-            userChat.equals(userChatRepository.findById(chatId));
         }
     }
 
@@ -129,7 +127,7 @@ public class UserChatService {
     }
 
     public UserChat findById(Long id) {
-        return userChatRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return userChatRepository.findById(id).orElse(null);
     }
 
     @Transactional

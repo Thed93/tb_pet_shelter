@@ -1,12 +1,13 @@
 package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
-import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserChatService;
+import pro.sky.telegrambot.service.VolunteerService;
 
 /**
  * class for processing user's message
@@ -20,16 +21,22 @@ public class Menu {
     private final TelegramBotService telegramBotService;
     private final UserChatService userChatService;
     private final PetReportService petReportService;
+    private final VolunteerService volunteerService;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Menu(TelegramBotService telegramBotService, UserChatService userChatService, PetReportService petReportService, Handlers handlers) {
+    public Menu(TelegramBotService telegramBotService,
+                UserChatService userChatService,
+                PetReportService petReportService,
+                VolunteerService volunteerService,
+                Handlers handlers) {
         this.telegramBotService = telegramBotService;
         this.userChatService = userChatService;
         this.petReportService = petReportService;
+        this.volunteerService = volunteerService;
         this.handlers = handlers;
     }
 
@@ -58,8 +65,10 @@ public class Menu {
                 petReportService.choicePet(chatId);
                 break;
             case VOLUNTEER:
-                userChatService.setVolunteer(chatId);
-                volunteer(chatId);
+                //userChatService.setVolunteer(chatId);
+//                volunteer(chatId);
+                userChatService.setUserChatStatus(chatId, BotState.CONVERSATION_WITH_VOLUNTEER);
+                volunteerService.callVolunteer(chatId);
                 break;
             case BACK:
                 break;
