@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.Probation;
 import pro.sky.telegrambot.repository.ProbationRepository;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.VolunteerService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,10 +16,14 @@ public class Timer {
 
     private final ProbationRepository probationRepository;
     private final TelegramBotService telegramBotService;
+    private final VolunteerService volunteerService;
 
-    public Timer(ProbationRepository probationRepository, TelegramBotService telegramBotService) {
+    public Timer(ProbationRepository probationRepository,
+                 TelegramBotService telegramBotService,
+                 VolunteerService volunteerService) {
         this.probationRepository = probationRepository;
         this.telegramBotService = telegramBotService;
+        this.volunteerService = volunteerService;
     }
 
     @Scheduled(cron = "00 00 20 * * *")
@@ -35,6 +40,8 @@ public class Timer {
                 telegramBotService.sendMessage(e.getUserChat().getUserId(), "Второй день от вас нет отчета");
             } else if (lastReportDay.plusDays(2).equals(currentDay)) {
                 telegramBotService.sendMessage(e.getUserChat().getUserId(), "Жалуюсь волонтеру");
+                //volunteerService.contactWithUser(e);
+                e.setStatus("NEED_REPORT");
             }
         });
     }
@@ -48,7 +55,8 @@ public class Timer {
             LocalDateTime endProbationDate = e.getProbationEndDate().truncatedTo(ChronoUnit.DAYS);
 
             if (endProbationDate.equals(currentDay)) {
-                //TODO: Добавить функцию для волонтера по решению оставить животное у юзера или нет
+//                volunteerService.decideFate(e);
+                e.setStatus("END_OF_PROBATION");
             }
         });
     }

@@ -42,6 +42,12 @@ public class Probation {
     @Column(name = "last_report_date")
     private LocalDateTime lastReportDate;
 
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
+
+    private String status;
+
     public Long getId() {
         return id;
     }
@@ -76,5 +82,21 @@ public class Probation {
 
     public void setLastReportDate(LocalDateTime lastReportDate) {
         this.lastReportDate = lastReportDate;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteer volunteer) {
+        this.volunteer = volunteer;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

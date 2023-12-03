@@ -28,6 +28,12 @@
             <column name="last_report_date" type="DATETIME">
                 <constraints nullable="true"/>
             </column>
+            <column name="volunteer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="probation" baseColumnNames="user_id"
@@ -38,6 +44,11 @@
         <addForeignKeyConstraint baseTableName="probation" baseColumnNames="pet_id"
                                  constraintName="fk_probation_pet_id"
                                  referencedTableName="pets"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="probation" baseColumnNames="volunteer_id"
+                                 constraintName="fk_probation_volunteer_id"
+                                 referencedTableName="volunteers"
                                  referencedColumnNames="id"/>
 
     </changeSet>

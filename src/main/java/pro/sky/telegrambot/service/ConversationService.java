@@ -1,8 +1,10 @@
 package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.commands.ChoseShelter;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.entity.Volunteer;
+import pro.sky.telegrambot.enums.ShelterType;
 
 @Service
 public class ConversationService {
@@ -10,13 +12,16 @@ public class ConversationService {
     private final UserChatService userChatService;
     private final VolunteerService volunteerService;
     private final TelegramBotService telegramBotService;
+    private final ChoseShelter choseShelter;
 
     public ConversationService(UserChatService userChatService,
                                VolunteerService volunteerService,
-                               TelegramBotService telegramBotService) {
+                               TelegramBotService telegramBotService,
+                               ChoseShelter choseShelter) {
         this.userChatService = userChatService;
         this.volunteerService = volunteerService;
         this.telegramBotService = telegramBotService;
+        this.choseShelter = choseShelter;
     }
 
 
@@ -27,14 +32,18 @@ public class ConversationService {
         telegramBotService.sendMessage(volunteer.getId(), text);
     }
 
-    public void conversationWithUser(String text, Long id) {
-        Volunteer volunteer = volunteerService.getVolunteer(id);
+    public void sendMessageToUser(String text, Long volunteerId) {
+        Volunteer volunteer = volunteerService.getVolunteer(volunteerId);
 
         if (text.equals("/stop")) {
-            volunteerService.stopConversaton(id);
-            userChatService.stopConversation(volunteer.getUser().getUserId());
+            stopConversation(volunteerId, volunteer.getUser().getUserId());
+        } else {
+            telegramBotService.sendMessage(volunteer.getUser().getUserId(), text);
         }
+    }
 
-        telegramBotService.sendMessage(volunteer.getUser().getUserId(), text);
+    private void stopConversation(Long volunteerId, Long chatId) {
+        volunteerService.stopConversation(volunteerId);
+        userChatService.stopConversation(chatId);
     }
 }

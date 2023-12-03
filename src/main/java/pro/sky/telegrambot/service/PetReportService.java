@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.commands.ChoseShelter;
-import pro.sky.telegrambot.entity.Pet;
-import pro.sky.telegrambot.entity.PetReport;
-import pro.sky.telegrambot.entity.Probation;
-import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.entity.*;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.handle.Handlers;
@@ -106,6 +103,26 @@ public class PetReportService {
     }
 
     /**
+     * method which accepts an empty report and fills it with initial data
+     *
+     * @param petReport
+     * @param pet
+     * @param chatId
+     */
+    private void newReport(PetReport petReport, Pet pet, Long chatId) {
+        UserChat user = userChatService.findById(chatId);
+        Volunteer volunteer = probationService.getProbationByPet(pet).getVolunteer();
+        petReport.setPet(pet);
+        petReport.setUserChat(user);
+        petReport.setDateTime(LocalDateTime.now());
+        petReport.setStatus(PetReportState.IN_PROGRESS.name());
+        petReport.setVolunteer(volunteer);
+        petReportRepository.save(petReport);
+        userChatService.setReport(chatId);
+        handlers.reportMenu(chatId);
+    }
+
+    /**
      * method which calls other methods to fill out the report
      *
      * @param text
@@ -126,24 +143,6 @@ public class PetReportService {
         } else if (petReport.getChangeInBehavior() == null) {
             reportChangeInBehavior(userChat, petReport, text);
         }
-    }
-
-    /**
-     * method which accepts an empty report and fills it with initial data
-     *
-     * @param petReport
-     * @param pet
-     * @param chatId
-     */
-    private void newReport(PetReport petReport, Pet pet, Long chatId) {
-        UserChat user = userChatService.findById(chatId);
-        petReport.setPet(pet);
-        petReport.setUserChat(user);
-        petReport.setDateTime(LocalDateTime.now());
-        petReport.setStatus(PetReportState.IN_PROGRESS.name());
-        petReportRepository.save(petReport);
-        userChatService.setReport(chatId);
-        handlers.reportMenu(chatId);
     }
 
     /**
@@ -231,11 +230,41 @@ public class PetReportService {
     private void reportChangeInBehavior(UserChat userChat, PetReport petReport, String text) {
         Long chatId = userChat.getUserId();
         petReport.setChangeInBehavior(text);
-        petReport.setStatus(PetReportState.FUll_INFO.name());
+        petReport.setStatus(PetReportState.FULL_INFO.name());
         petReportRepository.save(petReport);
         probationService.setLastReportDate(petReport.getPet(), LocalDateTime.now());
         userChatService.setChoseShelter(chatId);
         handlers.reportAccepted(userChat.getUserId());
         choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
+    }
+
+    public PetReport getReportByVolunteerAndStatus(Volunteer volunteer, String state) {
+        return petReportRepository.findFirstPetReportByVolunteerAndStatus(volunteer, state);
+    }
+
+    public File getPhoto(PetReport report) {
+        Path path = Path.of(report.getPhotoPath());
+        return path.toFile();
+    }
+
+    public void sendReport(Long volunteerId, PetReport report) {
+        File photo = getPhoto(report);
+        String text = String.format("Рацион животного:\n%s\n\n" +
+                "Общее самочувствие и привыкание к новому месту:\n%s\n\n" +
+                "Изменения в поведении:\n%s\n\n", report.getDiet(), report.getWellBeing(), report.getChangeInBehavior());
+        telegramBotService.sendPhoto(volunteerId, photo);
+        telegramBotService.sendMessage(volunteerId,  text + "/approve /deny");
+    }
+
+    public void setStatus(PetReport report, String inInspection) {
+        report.setStatus(inInspection);
+        petReportRepository.save(report);
+    }
+
+    public void denyReport(PetReport report) {
+        Long chatId = report.getUserChat().getUserId();
+        String petName = report.getPet().getName();
+        telegramBotService.sendMessage(chatId, "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
+                "Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного");
     }
 }

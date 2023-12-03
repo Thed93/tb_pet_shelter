@@ -156,4 +156,9 @@ public class UserChatService {
         return userChat.getCurrentChosenShelter();
     }
 
+    @Transactional
+    public void stopConversation(Long chatId) {
+        setChoseShelter(chatId);
+        //choseShelter.acceptChoseShelterCommand(ShelterType.valueOf(userChatService.getShelter(chatId)).toString(), chatId);
+    }
 }

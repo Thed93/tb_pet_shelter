@@ -24,31 +24,31 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * class for adding message to programmer
      */
     private final Logger LOGGER = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
     private final Start start;
-
     private final Menu menu;
-
+    private final VolunteerMenu volunteerMenu;
+    private final UnverifiedReports unverifiedReports;
+    private final EndOfProbation endOfProbation;
     private final Adoption adoption;
-
     private final Info info;
-
     private final ChoseShelter choseShelter;
-
     private final PetReportService petReportService;
-
     private final Back back;
-
     private final UserChatService userChatService;
     private final VolunteerService volunteerService;
-
     private final TelegramBotService telegramBotService;
     private final ConversationService conversationService;
 
     public TelegramBotUpdatesListener(Start start,
-                                      Menu menu, Adoption adoption,
-                                      Info info, ChoseShelter choseShelter,
-                                      PetReportService petReportService, Back back,
+                                      Menu menu,
+                                      VolunteerMenu volunteerMenu,
+                                      UnverifiedReports unverifiedReports,
+                                      EndOfProbation endOfProbation,
+                                      Adoption adoption,
+                                      Info info,
+                                      ChoseShelter choseShelter,
+                                      PetReportService petReportService,
+                                      Back back,
                                       UserChatService userChatService,
                                       VolunteerService volunteerService,
                                       TelegramBotService telegramBotService,
@@ -56,6 +56,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                       TelegramBot telegramBot) {
         this.start = start;
         this.menu = menu;
+        this.volunteerMenu = volunteerMenu;
+        this.unverifiedReports = unverifiedReports;
+        this.endOfProbation = endOfProbation;
         this.adoption = adoption;
         this.info = info;
         this.choseShelter = choseShelter;
@@ -130,6 +133,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 petReportService.createReport(text, chatId);
             case REPORT:
                 petReportService.complementReport(text, message.photo(), chatId);
+                break;
             case CONVERSATION_WITH_VOLUNTEER:
                 conversationService.sendMessageToVolunteer(text, chatId);
                 break;
@@ -143,13 +147,27 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
     }
 
-    public void volunteerPart(Long id, Message message, Volunteer volunteer) {
-
+    public void volunteerPart(Long volunteerId, Message message, Volunteer volunteer) {
+        String text = message.text();
         String state = volunteer.getState();
 
+        if ("/start".equals(message.text())) {
+            volunteerService.setState(volunteer, "MENU");
+            telegramBotService.sendMessage(volunteerId, "/unverified_reports");
+        }
+
         switch (state) {
+            case "MENU":
+                volunteerMenu.commands(text, volunteerId);
+                break;
+            case "UNVERIFIED_REPORTS":
+                unverifiedReports.commands(text, volunteerId);
+                break;
+            case "END_OF_PROBATION":
+                endOfProbation.commands(text, volunteerId);
+                break;
             case "CONVERSATION_WITH_USER":
-                conversationService.conversationWithUser(message.text(), id);
+                conversationService.sendMessageToUser(message.text(), volunteerId);
                 break;
         }
     }

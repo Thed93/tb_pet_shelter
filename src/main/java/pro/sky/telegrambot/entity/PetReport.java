@@ -68,6 +68,10 @@ public class PetReport {
      */
     private String status;
 
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
+
     public PetReport(Long id, Pet pet, UserChat userChat, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {
         this.id = id;
         this.pet = pet;
@@ -149,6 +153,14 @@ public class PetReport {
 
     public String getChangeInBehavior() {
         return changeInBehavior;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteer volunteer) {
+        this.volunteer = volunteer;
     }
 
     @Override

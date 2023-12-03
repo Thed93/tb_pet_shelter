@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import pro.sky.telegrambot.entity.Pet;
 import pro.sky.telegrambot.entity.PetReport;
 import pro.sky.telegrambot.entity.UserChat;
+import pro.sky.telegrambot.entity.Volunteer;
 
 import java.util.Optional;
 
@@ -30,4 +31,6 @@ public interface PetReportRepository extends JpaRepository<PetReport, Long> {
     PetReport findPetReportByPetAndStatus(Pet pet, String status);
 
     PetReport findPetReportByUserChatAndStatus(UserChat userChat, String status);
+
+    PetReport findFirstPetReportByVolunteerAndStatus(Volunteer volunteer, String state);
 }

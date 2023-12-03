@@ -41,6 +41,9 @@
             <column name="status" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
+            <column name="volunteer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="pet_report" baseColumnNames="pet_id"
@@ -52,6 +55,11 @@
                                  constraintName="fk_pet_report_user_id"
                                  referencedTableName="user"
                                  referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="pet_report" baseColumnNames="volunteer_id"
+                                 constraintName="fk_pet_report_volunteers_id"
+                                 referencedTableName="volunteers"
+                                 referencedColumnNames="id"/>
 
         <createIndex tableName="pet_report" indexName="IDX_PET_REPORT_DATE_TIME">
             <column name="date_time"/>
