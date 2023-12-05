@@ -29,6 +29,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final VolunteerMenu volunteerMenu;
     private final UnverifiedReports unverifiedReports;
     private final EndOfProbation endOfProbation;
+    private final ExtendProbation extendProbation;
     private final Adoption adoption;
     private final Info info;
     private final ChoseShelter choseShelter;
@@ -44,6 +45,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                       VolunteerMenu volunteerMenu,
                                       UnverifiedReports unverifiedReports,
                                       EndOfProbation endOfProbation,
+                                      ExtendProbation extendProbation,
                                       Adoption adoption,
                                       Info info,
                                       ChoseShelter choseShelter,
@@ -59,6 +61,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.volunteerMenu = volunteerMenu;
         this.unverifiedReports = unverifiedReports;
         this.endOfProbation = endOfProbation;
+        this.extendProbation = extendProbation;
         this.adoption = adoption;
         this.info = info;
         this.choseShelter = choseShelter;
@@ -153,7 +156,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
         if ("/start".equals(message.text())) {
             volunteerService.setState(volunteer, "MENU");
-            telegramBotService.sendMessage(volunteerId, "/unverified_reports");
+            telegramBotService.sendMessage(volunteerId, "/unverified_reports - проверить новые отчеты\n" +
+                    "/no_reports - усыновители, которые два и более дней не сдают отчеты\n" +
+                    "/end_of_probation - решить остается ли животное у усыновителя\n");
         }
 
         switch (state) {
@@ -165,6 +170,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 break;
             case "END_OF_PROBATION":
                 endOfProbation.commands(text, volunteerId);
+                break;
+            case "EXTEND_PROBATION":
+                extendProbation.commands(text, volunteerId);
                 break;
             case "CONVERSATION_WITH_USER":
                 conversationService.sendMessageToUser(message.text(), volunteerId);

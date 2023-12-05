@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.*;
 import pro.sky.telegrambot.repository.VolunteerRepository;
@@ -7,6 +9,7 @@ import pro.sky.telegrambot.repository.VolunteerRepository;
 @Service
 public class VolunteerService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VolunteerService.class);
     private final VolunteerRepository volunteerRepository;
     private final UserChatService userChatService;
     private final ProbationService probationService;
@@ -106,7 +109,7 @@ public class VolunteerService {
         if (probation != null) {
             UserChat userChat = probation.getUserChat();
 //        telegramBotService.sendMessage(volunteerId, userChat.getContact());TODO: Добавить юзеру контактные данные
-            telegramBotService.sendMessage(volunteerId, userChat.getName()); // Удалить после добавления юзеру контактных данных
+            telegramBotService.sendMessage(volunteerId, userChat.getName() + "\n/start"); // Удалить после добавления юзеру контактных данных
             probationService.setStatus(probation, "UNDER_CONTROL");
         } else {
             telegramBotService.sendMessage(volunteerId, "Все справляются с отчетами");
@@ -118,7 +121,7 @@ public class VolunteerService {
         Probation probation = probationService.getProbationByVolunteerAndStatus(volunteer, "END_OF_PROBATION");
         if (probation != null) {
             probationService.setStatus(probation, "ON_THE_DECISION");
-            telegramBotService.sendMessage(volunteerId, String.format("Усыновитель: %s\nДомашнее животное: %s", probation.getUserChat().getName(), probation.getPet().getName()));
+            telegramBotService.sendMessage(volunteerId, String.format("Усыновитель: %s\nДомашнее животное: %s\n/approve\t/deny\t/extend", probation.getUserChat().getName(), probation.getPet().getName()));
         } else {
             telegramBotService.sendMessage(volunteerId, "Пока что нет тех у кого закончился испытательный срок");
             setState(volunteerId, "MENU");
@@ -142,6 +145,24 @@ public class VolunteerService {
             probationService.denyAdopt(probation);
             probationService.deleteProbation(probation);
             endOfProbation(volunteerId);
+        }
+    }
+
+    public void extendProbation(Long volunteerId, String text) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow();
+        Probation probation = probationService.getProbationByVolunteerAndStatus(volunteer, "ON_THE_DECISION");
+        int days = 0;
+        try {
+            days = Integer.parseInt(text);
+        } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
+        }
+        if (probationService.increaseProbation(probation, days)) {
+            setState(volunteerId, "END_OF_PROBATION");
+            probationService.setStatus(probation, null);
+            endOfProbation(volunteerId);
+        } else {
+            telegramBotService.sendMessage(volunteerId, "Введите число в диапазоне от 1 до 30");
         }
     }
 }

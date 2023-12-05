@@ -253,7 +253,7 @@ public class PetReportService {
                 "Общее самочувствие и привыкание к новому месту:\n%s\n\n" +
                 "Изменения в поведении:\n%s\n\n", report.getDiet(), report.getWellBeing(), report.getChangeInBehavior());
         telegramBotService.sendPhoto(volunteerId, photo);
-        telegramBotService.sendMessage(volunteerId,  text + "/approve /deny");
+        telegramBotService.sendMessage(volunteerId,  text + "/approve\t/deny");
     }
 
     public void setStatus(PetReport report, String inInspection) {

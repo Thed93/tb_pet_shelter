@@ -37,11 +37,13 @@ public class ProbationService {
         return probationRepository.save(probation);
     }
 
-    public void increaseProbation(Probation probation, int days) {
+    public boolean increaseProbation(Probation probation, int days) {
         if (days <= 30 && days > 0) {
             probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));
             probationRepository.save(probation);
+            return true;
         }
+        return false;
     }
 
     public void adoptPet(Pet pet) {

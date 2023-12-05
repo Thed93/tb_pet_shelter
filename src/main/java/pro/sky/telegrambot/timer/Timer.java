@@ -4,6 +4,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.Probation;
 import pro.sky.telegrambot.repository.ProbationRepository;
+import pro.sky.telegrambot.service.ProbationService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.VolunteerService;
 
@@ -15,13 +16,16 @@ import java.util.List;
 public class Timer {
 
     private final ProbationRepository probationRepository;
+    private final ProbationService probationService;
     private final TelegramBotService telegramBotService;
     private final VolunteerService volunteerService;
 
     public Timer(ProbationRepository probationRepository,
+                 ProbationService probationService,
                  TelegramBotService telegramBotService,
                  VolunteerService volunteerService) {
         this.probationRepository = probationRepository;
+        this.probationService = probationService;
         this.telegramBotService = telegramBotService;
         this.volunteerService = volunteerService;
     }
@@ -41,7 +45,7 @@ public class Timer {
             } else if (lastReportDay.plusDays(2).equals(currentDay)) {
                 telegramBotService.sendMessage(e.getUserChat().getUserId(), "Жалуюсь волонтеру");
                 //volunteerService.contactWithUser(e);
-                e.setStatus("NEED_REPORT");
+                probationService.setStatus(e, "NEED_REPORT");
             }
         });
     }
@@ -56,7 +60,7 @@ public class Timer {
 
             if (endProbationDate.equals(currentDay)) {
 //                volunteerService.decideFate(e);
-                e.setStatus("END_OF_PROBATION");
+                probationService.setStatus(e, "END_OF_PROBATION");
             }
         });
     }
