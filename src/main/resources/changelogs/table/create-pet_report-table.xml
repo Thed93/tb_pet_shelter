@@ -17,22 +17,49 @@
             <column name="id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" />
             </column>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_user3" references="&quot;user&quot;(&quot;user_id&quot;)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="date_time" type="DATETIME(6)">
                 <constraints nullable="true"/>
             </column>
-            <column name="photo" type="oid">
+            <column name="photo_path" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="text" type="VARCHAR(2000)">
+            <column name="diet" type="VARCHAR(2000)">
                 <constraints nullable="true"/>
             </column>
-            <column name="report_number" type="INTEGER">
+            <column name="well_being" type="VARCHAR(2000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="change_in_behavior" type="VARCHAR(2000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="volunteer_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint baseTableName="pet_report" baseColumnNames="pet_id"
+                                 constraintName="fk_pet_report_pet_id"
+                                 referencedTableName="pets"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="pet_report" baseColumnNames="user_id"
+                                 constraintName="fk_pet_report_user_id"
+                                 referencedTableName="user"
+                                 referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="pet_report" baseColumnNames="volunteer_id"
+                                 constraintName="fk_pet_report_volunteers_id"
+                                 referencedTableName="volunteers"
+                                 referencedColumnNames="id"/>
 
         <createIndex tableName="pet_report" indexName="IDX_PET_REPORT_DATE_TIME">
             <column name="date_time"/>

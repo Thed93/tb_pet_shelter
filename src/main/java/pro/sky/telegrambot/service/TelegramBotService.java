@@ -2,18 +2,16 @@ package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.io.File;
 
 @Service
 public class TelegramBotService {
@@ -40,5 +38,9 @@ public class TelegramBotService {
         sendMessage(chatId, text, null);
     }
 
+    public void sendPhoto(Long volunteerId, File photo) {
+        SendPhoto sendPhoto = new SendPhoto(volunteerId, photo);
+        telegramBot.execute(sendPhoto);
+    }
 }
 

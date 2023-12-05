@@ -1,9 +1,9 @@
 package pro.sky.telegrambot.entity;
 
-import com.pengrad.telegrambot.model.PhotoSize;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * class of users reports
@@ -20,11 +20,18 @@ public class PetReport {
     private Long id;
 
     /**
-     * user associated with this appeal
+     * pet associated with this appeal
+     */
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
+
+    /**
+     * user who created the report
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserChat user;
+    private UserChat userChat;
 
     /**
      * date, when user send report
@@ -33,41 +40,67 @@ public class PetReport {
     private LocalDateTime dateTime;
 
     /**
-     * photo, that user send
+     * path to the photo, that user send
      */
-    @Column(length = 20, nullable = true, columnDefinition = "oid")
-    private PhotoSize[] photo;
+    @Column(name = "photo_path")
+    private String photoPath;
 
     /**
-     * user's report
+     * pet diet
      */
-    @Column(length = 2000, nullable = true)
-    private String text;
+    @Column(length = 2000)
+    private String diet;
 
     /**
-     * number of report, that this user send
+     * pet's well-being
      */
-    @Column(name = "report_number", nullable = false)
-    private int reportNumber;
+    @Column(name = "well_being", length = 2000)
+    private String wellBeing;
 
+    /**
+     * change in pet behavior
+     */
+    @Column(name = "change_in_behavior", length = 2000)
+    private String changeInBehavior;
 
+    /**
+     * status of the report which shows what stage it is at
+     */
+    private String status;
 
-    public PetReport(UserChat user, LocalDateTime dateTime, PhotoSize[] photo, String text) {
-        this.user = user;
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
+
+    public PetReport(Long id, Pet pet, UserChat userChat, LocalDateTime dateTime, String photoPath, String diet, String wellBeing, String changeInBehavior, String status) {
+        this.id = id;
+        this.pet = pet;
+        this.userChat = userChat;
         this.dateTime = dateTime;
-        this.photo = photo;
-        this.text = text;
+        this.photoPath = photoPath;
+        this.diet = diet;
+        this.wellBeing = wellBeing;
+        this.changeInBehavior = changeInBehavior;
+        this.status = status;
     }
 
     public PetReport() {
     }
 
-    public UserChat getUser() {
-        return user;
+    public Pet getPet() {
+        return pet;
     }
 
-    public void setUser(UserChat user) {
-        this.user = user;
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+    public UserChat getUserChat() {
+        return userChat;
+    }
+
+    public void setUserChat(UserChat userChat) {
+        this.userChat = userChat;
     }
 
     public LocalDateTime getDateTime() {
@@ -78,31 +111,68 @@ public class PetReport {
         this.dateTime = dateTime;
     }
 
-    public PhotoSize[] getPhoto() {
-        return photo;
+    public String getPhotoPath() {
+        return photoPath;
     }
 
-    public void setPhoto(PhotoSize[] photo) {
-        this.photo = photo;
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public int getReportNumber() {
-        return reportNumber;
-    }
-
-    public void setReportNumber(int reportNumber) {
-        this.reportNumber = reportNumber;
+    public void setChangeInBehavior(String changeInBehavior) {
+        this.changeInBehavior = changeInBehavior;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDiet() {
+        return diet;
+    }
+
+    public void setDiet(String diet) {
+        this.diet = diet;
+    }
+
+    public String getWellBeing() {
+        return wellBeing;
+    }
+
+    public void setWellBeing(String wellBeing) {
+        this.wellBeing = wellBeing;
+    }
+
+    public String getChangeInBehavior() {
+        return changeInBehavior;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteer volunteer) {
+        this.volunteer = volunteer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetReport petReport = (PetReport) o;
+        return Objects.equals(id, petReport.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,11 +1,13 @@
 package pro.sky.telegrambot.commands;
 
 import org.springframework.stereotype.Component;
-import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.BotState;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
+import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
+import pro.sky.telegrambot.service.VolunteerService;
 
 /**
  * class for processing user's message
@@ -17,14 +19,24 @@ public class Menu {
      * copy of Telegram - bot for sending message
      */
     private final TelegramBotService telegramBotService;
+    private final UserChatService userChatService;
+    private final PetReportService petReportService;
+    private final VolunteerService volunteerService;
 
     /**
      * class for getting methods
      */
     private final Handlers handlers;
 
-    public Menu(TelegramBotService telegramBotService, Handlers handlers) {
+    public Menu(TelegramBotService telegramBotService,
+                UserChatService userChatService,
+                PetReportService petReportService,
+                VolunteerService volunteerService,
+                Handlers handlers) {
         this.telegramBotService = telegramBotService;
+        this.userChatService = userChatService;
+        this.petReportService = petReportService;
+        this.volunteerService = volunteerService;
         this.handlers = handlers;
     }
 
@@ -32,27 +44,39 @@ public class Menu {
      *
      * redirection and send parameters for user depending on his message
      *
-     * @param user
      * @param text user's message
      * @param chatId
      */
-    public void acceptInfoCommands(UserChat user, String text, Long chatId) {
-        user.setBotState(BotState.INFO.toString());
-        if (text.equals(Commands.INFORMATION.toString())) {
-            user.setBotState(BotState.INFO.toString());
-            infoMenu(chatId, user);
-        }
-        if (text.equals(Commands.ADOPTION.toString())) {
-            user.setBotState(BotState.ADOPTION.toString());
-            adoptionMenu(chatId, user);
-        }
-        if (text.equals(Commands.REPORT.toString())) {
-            user.setBotState(BotState.REPORT.toString());
-            reportMenu(user, text.toString(), chatId);
-        }
-        if (text.equals(Commands.VOLUNTEER.toString())) {
-            user.setBotState(BotState.VOLUNTEER.toString());
-            volunteer(user, chatId);
+    public void acceptInfoCommands(String text, Long chatId) {
+        Commands currentCommand = Commands.valueOf(text.substring(1).toUpperCase());
+        switch (currentCommand){
+            case INFORMATION:
+                userChatService.setInfo(chatId);
+                infoMenu(chatId);
+                break;
+            case ADOPTION:
+                userChatService.setAdoption(chatId);
+                adoptionMenu(chatId);
+                break;
+            case REPORT:
+/*                userChatService.setReport(chatId);
+                reportMenu(text, chatId);*/
+                //petReportService.report(chatId);
+                petReportService.choicePet(chatId);
+                break;
+            case VOLUNTEER:
+                //userChatService.setVolunteer(chatId);
+//                volunteer(chatId);
+                userChatService.setUserChatStatus(chatId, BotState.CONVERSATION_WITH_VOLUNTEER);
+                volunteerService.callVolunteer(chatId);
+                break;
+            case BACK:
+                break;
+            default:
+                telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                        "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                        "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
+                break;
         }
     }
 
@@ -63,10 +87,9 @@ public class Menu {
      * use method {@link pro.sky.telegrambot.handle.Handlers#handleAdoptionConsultation(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void infoMenu (Long chatId, UserChat user){
-        handlers.handleAdoptionConsultation(chatId, user.getCurrentChosenShelter());
+    private final void infoMenu (Long chatId){
+        handlers.handleAdoptionConsultation(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -75,34 +98,32 @@ public class Menu {
      * use method {@link pro.sky.telegrambot.handle.Handlers#howToTakePet(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void adoptionMenu (Long chatId, UserChat user){
-        handlers.howToTakePet(chatId, user.getCurrentChosenShelter());
+    private final void adoptionMenu (Long chatId){
+        handlers.howToTakePet(chatId, userChatService.getShelter(chatId));
     }
 
     /**
      * method, if user send {@code "/report" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#reportMenu(UserChat, String, long)}
+     * use method
      *
-     * @param user
      * @param text
      * @param chatId
      */
-    private void reportMenu(UserChat user, String text, long chatId){
-        handlers.reportMenu(user, text, chatId);
+    private void reportMenu(String text, long chatId){
+        handlers.reportMenu(chatId);
     }
 
     /**
      * method, if user send {@code "/volunteer" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
+     * use method
      *
-     * @param user
      * @param chatId
      */
-    private void volunteer(UserChat user, long chatId){
-        handlers.volunteer(user, chatId);
+    private void volunteer(long chatId){
+        handlers.volunteer(chatId);
     }
+
 }

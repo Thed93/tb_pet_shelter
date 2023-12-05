@@ -14,20 +14,19 @@ public class UserChat {
      * unique identifier of user
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
     /**
      * user's name
      */
-    @Column(length = 20, nullable = false)
+    @Column(length = 40, nullable = false)
     private String name;
 
     /**
      * user's surname
      */
-    @Column(length = 20, nullable = true)
+    @Column(length = 40, nullable = true)
     private String surname;
 
     /**
@@ -50,6 +49,7 @@ public class UserChat {
     @Column(name = "bot_state")
     private String botState;
 
+
     public UserChat(Long userId, String name, String surname, String currentChosenShelter, boolean hasChosenShelter, String botState) {
         this.userId = userId;
         this.name = name;
@@ -59,12 +59,17 @@ public class UserChat {
         this.botState = botState;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserChat(Long userId, String name, String surname) {
+        this.userId = userId;
+        this.name = name;
+        this.surname = surname;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public UserChat() {
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -113,9 +118,6 @@ public class UserChat {
         if (o == null || getClass() != o.getClass()) return false;
         UserChat userChat = (UserChat) o;
         return hasChosenShelter == userChat.hasChosenShelter && Objects.equals(userId, userChat.userId) && Objects.equals(name, userChat.name) && Objects.equals(surname, userChat.surname) && Objects.equals(currentChosenShelter, userChat.currentChosenShelter) && Objects.equals(botState, userChat.botState);
-    }
-
-    public UserChat() {
     }
 
     @Override

@@ -1,11 +1,14 @@
 package pro.sky.telegrambot.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.entity.UserChat;
 import pro.sky.telegrambot.enums.Commands;
 import pro.sky.telegrambot.handle.Handlers;
 import pro.sky.telegrambot.service.TelegramBotService;
+import pro.sky.telegrambot.service.UserChatService;
 
 /**
  * class for processing user's message
@@ -23,31 +26,35 @@ public class Adoption {
     /**
      * class for getting methods
      */
+    private static final Logger LOG = LoggerFactory.getLogger(Adoption.class);
     private final Handlers handlers;
 
-    Commands commands;
+    private final UserChatService userChatService;
 
     /**
      * class for processing user's commands
      */
 
-    public Adoption(TelegramBotService telegramBotService, Handlers handlers) {
+    public Adoption(TelegramBotService telegramBotService, Handlers handlers, UserChatService userChatService) {
         this.telegramBotService = telegramBotService;
         this.handlers = handlers;
+        this.userChatService = userChatService;
     }
 
     /**
      * redirection user depending on his message
      *
-     * @param user
      * @param text user's message
      * @param chatId
      */
-    public void adoptionMenu(UserChat user, String text, long chatId) throws UnsatisfiedDependencyException {
-        Commands currentCommand = Commands.valueOf(text);
+    public void adoptionMenu(String text, long chatId) throws UnsatisfiedDependencyException {
+
+        Commands currentCommand = Commands.valueOf(text.substring(1).toUpperCase());
+        LOG.info(currentCommand.toString());
+
         switch (currentCommand){
-            case CAT:
-                welcomeRules(chatId, user);
+            case WELCOME_RULES:
+                welcomeRules(chatId);
                 break;
             case DOCS:
                 docs(chatId);
@@ -74,7 +81,14 @@ public class Adoption {
                 refusePet(chatId);
                 break;
             case VOLUNTEER:
-                volunteer(user, chatId);
+                volunteer(chatId);
+                break;
+            case BACK:
+                break;
+            default:
+                telegramBotService.sendMessage(chatId, "Неправильная команда\n" +
+                        "для возврата в начало нажмите - " + Commands.START.getCommandText() + "\n" +
+                        "для возврата в предыдущее меню нажмите - " + Commands.BACK.getCommandText());
                 break;
         }
     }
@@ -85,10 +99,9 @@ public class Adoption {
      * use method {@link pro.sky.telegrambot.handle.Handlers#welcomeRules(Long, String)}
      *
      * @param chatId
-     * @param user
      */
-    private final void welcomeRules (Long chatId, UserChat user){
-        handlers.welcomeRules(chatId, user.getCurrentChosenShelter().toString());
+    private final void welcomeRules (Long chatId){
+        handlers.welcomeRules(chatId, userChatService.getShelter(chatId));
     }
 
     /**
@@ -181,13 +194,12 @@ public class Adoption {
     /**
      * method, if user send {@code "/volunteer" }
      * <br>
-     * use method {@link pro.sky.telegrambot.handle.Handlers#volunteer(UserChat, long)}
+     * use method
      *
-     * @param user
      * @param chatId
      */
-    private final void volunteer(UserChat user, Long chatId){
-        handlers.volunteer(user, chatId);
+    private final void volunteer(Long chatId){
+        handlers.volunteer(chatId);
     }
 
 
